@@ -14,13 +14,7 @@ public abstract class Quantifier extends Expression {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getQuantifier());
-        builder.append(term);
-        builder.append("(");
-        builder.append(argument);
-        builder.append(")");
-        return builder.toString();
+        return getQuantifier() + term + "(" + argument + ")";
     }
 
     protected abstract String getQuantifier();
