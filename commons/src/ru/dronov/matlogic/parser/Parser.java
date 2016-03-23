@@ -8,6 +8,7 @@ import ru.dronov.matlogic.Token;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public abstract class Parser {
 
@@ -45,5 +46,8 @@ public abstract class Parser {
     }
 
     @NotNull
+    public abstract HypothesisHolder parseHypothesis() throws IOException;
+
+    @Nullable
     public abstract Expression parse() throws IOException;
 }

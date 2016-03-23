@@ -17,6 +17,7 @@ public enum Token {
     LEFT_BRACKET("("),
     RIGHT_BRACKET(")"),
     COMMA(","),
+
     NEW_LINE("\n"),
     END_FILE("-1");
 

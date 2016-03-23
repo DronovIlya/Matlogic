@@ -1,5 +1,6 @@
 package ru.dronov.matlogic.parser;
 
+import com.sun.istack.internal.Nullable;
 import ru.dronov.matlogic.*;
 
 import java.io.ByteArrayInputStream;
@@ -20,8 +21,35 @@ public class PredicateParser extends Parser {
     }
 
     @Override
+    public HypothesisHolder parseHypothesis() throws IOException {
+        HypothesisHolder result = null;
+        Expression expression = parse();
+        if (getToken() == Token.COMMA || getToken() == Token.DERIVABLE) {
+            List<Expression> hypothesis = new ArrayList<>();
+            hypothesis.add(expression);
+
+            while (getToken() == Token.COMMA) {
+                hypothesis.add(parse());
+            }
+
+            Expression beta = parse();
+            Expression alpha = hypothesis.get(hypothesis.size() - 1);
+            hypothesis.remove(hypothesis.size() - 1);
+            result = new HypothesisHolder(hypothesis, alpha, beta);
+        }
+        return result;
+    }
+
+    @Nullable
+    @Override
     public Expression parse() throws IOException {
         nextToken();
+        while (getToken() == Token.NEW_LINE) {
+            nextToken();
+        }
+        if (getToken() == Token.END_FILE) {
+            return null;
+        }
         return expression();
     }
 

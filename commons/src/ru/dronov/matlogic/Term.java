@@ -1,8 +1,6 @@
 package ru.dronov.matlogic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Term extends Expression {
 
@@ -19,6 +17,16 @@ public class Term extends Expression {
     public Term(String name, List<Term> terms) {
         this.name = name;
         this.terms = terms;
+    }
+
+    @Override
+    public Set<String> getFreeVariables() {
+        Set<String> result = new HashSet<>();
+        for (Term term : terms) {
+            result.addAll(term.getFreeVariables());
+        }
+        result.add(name);
+        return result;
     }
 
     @Override

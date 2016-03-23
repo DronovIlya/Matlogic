@@ -1,6 +1,7 @@
 package ru.dronov.matlogic;
 
 import java.util.List;
+import java.util.Set;
 
 public class Predicate extends Expression {
 
@@ -12,6 +13,11 @@ public class Predicate extends Expression {
     public Predicate(String name, List<Term> terms) {
         this.name = name;
         this.terms = terms;
+    }
+
+    @Override
+    public Set<String> getFreeVariables() {
+        return null;
     }
 
     @Override

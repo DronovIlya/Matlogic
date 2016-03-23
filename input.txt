@@ -1,1 +1,2 @@
-@b?bP(f(a),g(b)),S|-@b1?b1(Q(g(a),f(b))->P(f(a),g(b1)))
+?x!P(x)|-!@xP(x)
+(P(x)&G(x))->(P(x)&G(x))->(P(x)&G(x))
