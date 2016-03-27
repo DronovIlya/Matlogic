@@ -20,6 +20,10 @@ public class Main {
 
     private static final String INPUT_FILE_SUFFIX = ".in";
     private static final String OUTPUT_FILE_SUFFIX = ".out";
+    private static final String USAGE = "\nUsage: [option] [filepath]\n" +
+            "-test input.in = read one sample test from input.in\n" +
+            "-dir  dirname  = read and process all tests from given dir\n" +
+            "IMPORTANT: filename must be ended with .in";
 
     private Parser parser;
     public PredicateHelper helper;
@@ -53,7 +57,7 @@ public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
         if (args.length != 2) {
-            System.out.println("USAGE");
+            System.out.println(USAGE);
             return;
         }
 
@@ -62,7 +66,7 @@ public class Main {
         } else if ("-dir".equals(args[0])) {
             solveSeveralTest(args[1]);
         } else {
-            System.out.println("USAGE");
+            System.out.println(USAGE);
         }
     }
 

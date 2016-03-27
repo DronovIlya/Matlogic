@@ -40,7 +40,7 @@ public class Replacer {
             String firstLine = reader.readLine();
             String[] variables = firstLine.split(" ");
             if (variables.length == 0) {
-                throw new IllegalArgumentException("first line must contains of used variables");
+                throw new IllegalArgumentException("first line must contains used variables");
             }
             if (variables.length != args.length) {
                 throw new IllegalArgumentException("you must use the same number of variables and expressions");
