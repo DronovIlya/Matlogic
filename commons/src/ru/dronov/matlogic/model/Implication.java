@@ -1,4 +1,8 @@
-package ru.dronov.matlogic;
+package ru.dronov.matlogic.model;
+
+import ru.dronov.matlogic.model.base.BinaryExpression;
+import ru.dronov.matlogic.model.base.Expression;
+import ru.dronov.matlogic.parser.Token;
 
 public class Implication extends BinaryExpression {
 
@@ -7,7 +11,7 @@ public class Implication extends BinaryExpression {
     }
 
     @Override
-    protected String getSign() {
+    protected String getOperator() {
         return Token.IMPLICATION.getValue();
     }
 }

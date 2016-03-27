@@ -2,13 +2,11 @@ package ru.dronov.matlogic.parser;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
-import ru.dronov.matlogic.Expression;
-import ru.dronov.matlogic.Token;
+import ru.dronov.matlogic.model.base.Expression;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 public abstract class Parser {
 

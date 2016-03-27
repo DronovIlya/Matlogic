@@ -1,6 +1,6 @@
 package ru.dronov.matlogic.parser;
 
-import ru.dronov.matlogic.Expression;
+import ru.dronov.matlogic.model.base.Expression;
 
 import java.util.List;
 

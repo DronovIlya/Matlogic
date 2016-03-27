@@ -1,11 +1,10 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
-import ru.dronov.matlogic.Expression;
+import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.parser.Parser;
 import ru.dronov.matlogic.parser.PredicateParser;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,7 +24,7 @@ public class ParserTest {
 
     @Test
     public void testParse3() throws IOException {
-        checkResult("A->b->C", "A->(b->C)");
+        checkResult("A->B->C", "(A)->((B)->(C))");
     }
 
     private void checkResult(String expression, String expected) throws IOException {

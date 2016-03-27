@@ -1,9 +1,10 @@
 package ru.dronov.matlogic.parser;
 
 import com.sun.istack.internal.Nullable;
-import ru.dronov.matlogic.*;
+import ru.dronov.matlogic.model.*;
+import ru.dronov.matlogic.model.base.Expression;
+import ru.dronov.matlogic.model.predicate.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -87,14 +88,14 @@ public class PredicateParser extends Parser {
                 return new Negation(expressionUnary());
             case UNIVERSAL:
                 nextToken();
-                Term term = new Term(getDescription());
+                Variable term = new Variable(getDescription());
                 nextToken();
                 return new Universal(term, expressionUnary());
             case EXISTENCE:
                 nextToken();
-                term = new Term(getDescription());
+                term = new Variable(getDescription());
                 nextToken();
-                return new Existance(term, expressionUnary());
+                return new Existence(term, expressionUnary());
             case LEFT_BRACKET:
                 nextToken();
                 Expression expr = expression();
@@ -120,7 +121,7 @@ public class PredicateParser extends Parser {
             nextToken();
             return new Predicate(predicateName, terms);
         } else {
-            return new Variable(predicateName);
+            return new Predicate(predicateName);
         }
     }
 

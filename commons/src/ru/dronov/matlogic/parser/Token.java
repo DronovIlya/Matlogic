@@ -1,4 +1,4 @@
-package ru.dronov.matlogic;
+package ru.dronov.matlogic.parser;
 
 public enum Token {
 

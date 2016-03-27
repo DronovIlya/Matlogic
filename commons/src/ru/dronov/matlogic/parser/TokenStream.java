@@ -1,7 +1,5 @@
 package ru.dronov.matlogic.parser;
 
-import ru.dronov.matlogic.Token;
-
 import java.io.*;
 
 public class TokenStream {

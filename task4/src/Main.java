@@ -1,17 +1,22 @@
-import ru.dronov.matlogic.Expression;
+import ru.dronov.matlogic.exceptions.ResourceNotFound;
+import ru.dronov.matlogic.exceptions.RuleQuantifierException;
+import ru.dronov.matlogic.exceptions.SubstitutionException;
+import ru.dronov.matlogic.exceptions.UnknownException;
+import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.parser.HypothesisHolder;
 import ru.dronov.matlogic.parser.Parser;
 import ru.dronov.matlogic.parser.PredicateParser;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class Main {
 
+    private static final String BASE_ERROR_MESSAGE = "Вывод некорректен, начиная с формулы номер %d";
+
     private Parser parser;
+    private PredicateHelper helper;
 
     public Main() {
     }
@@ -21,6 +26,13 @@ public class Main {
         HypothesisHolder holder = parser.parseHypothesis();
         List<Expression> proof = readProof();
 
+        helper = new PredicateHelper(holder);
+        try {
+            helper.handle(proof);
+        } catch (Exception e) {
+            System.out.println(String.format(BASE_ERROR_MESSAGE, helper.processedLines));
+            System.out.println(e.getMessage());
+        }
     }
 
     private List<Expression> readProof() throws IOException {
