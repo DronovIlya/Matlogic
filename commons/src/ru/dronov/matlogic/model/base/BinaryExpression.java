@@ -28,7 +28,7 @@ public abstract class BinaryExpression extends Expression {
     }
 
     @Override
-    public boolean compare(Expression expression, Map<String, Expression> dictionary) {
+    public boolean compare(Expression expression, Map<Object, Object> dictionary) {
         if (getClass() != expression.getClass()) {
             return false;
         }
@@ -58,6 +58,13 @@ public abstract class BinaryExpression extends Expression {
         } else {
             return left.equals(((BinaryExpression) obj).left) && right.equals(((BinaryExpression) obj).right);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int result = left != null ? left.hashCode() : 0;
+        result = 31 * result + (right != null ? right.hashCode() : 0);
+        return result;
     }
 
     /**

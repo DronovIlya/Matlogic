@@ -24,7 +24,7 @@ public class Replacer {
     }
 
     public static List<Expression> replaceAimplC(Expression A, Expression B, Expression C) throws ResourceNotFound {
-        return replace("a_impl_c", A, B, C);
+        return replace(RESOURCE_DEFAULT_PATH + "a_impl_c", A, B, C);
     }
 
     public static List<Expression> replaceUniversalModusPonens(Expression A, Expression B, Expression C, Variable x) throws ResourceNotFound {
@@ -57,7 +57,6 @@ public class Replacer {
                         line = line.replace(variables[i], args[i].toString());
                     }
                 }
-                System.out.println("line = " + line);
                 result.add(parseStringAxiom(line));
             }
 

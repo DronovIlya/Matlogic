@@ -20,11 +20,11 @@ public abstract class UnaryExpression extends Expression {
     }
 
     @Override
-    public boolean compare(Expression expression, Map<String, Expression> dictionary) {
+    public boolean compare(Expression expression, Map<Object, Object> dictionary) {
         if (getClass() != expression.getClass()) {
             return false;
         }
-        return expression.compare(((UnaryExpression) expression).expression, dictionary);
+        return this.expression.compare(((UnaryExpression) expression).expression, dictionary);
     }
 
     @Override
@@ -40,6 +40,19 @@ public abstract class UnaryExpression extends Expression {
     @Override
     public String toString() {
         return getSign() + "(" + expression + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        return expression.equals(((UnaryExpression)obj).expression);
+    }
+
+    @Override
+    public int hashCode() {
+        return expression != null ? expression.hashCode() : 0;
     }
 
     protected abstract String getSign();

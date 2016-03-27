@@ -38,7 +38,7 @@ public abstract class Quantifier extends Expression {
     }
 
     @Override
-    public boolean compare(Expression expression, Map<String, Expression> dictionary) {
+    public boolean compare(Expression expression, Map<Object, Object> dictionary) {
         if (getClass() != expression.getClass()) {
             return false;
         }
@@ -75,6 +75,25 @@ public abstract class Quantifier extends Expression {
     @Override
     public String toString() {
         return getQuantifier() + term + "(" + argument + ")";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        Quantifier quantifier = (Quantifier) obj;
+        if (!term.equals(quantifier.term)) {
+            return false;
+        }
+        return argument.equals(quantifier.argument);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = term != null ? term.hashCode() : 0;
+        result = 31 * result + (argument != null ? argument.hashCode() : 0);
+        return result;
     }
 
     /**

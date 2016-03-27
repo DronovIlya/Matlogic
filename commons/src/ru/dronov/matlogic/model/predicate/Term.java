@@ -32,10 +32,23 @@ public class Term {
         return result;
     }
 
-    public boolean isSimilar(Expression expression, Map<String, Expression> dictionary) {
-        // TODO: now, we check similarity only with classical axioms, generalize it.
-        // TODO: in this case, it will always return false
-        return false;
+    public boolean isSimilar(Term term, Map<Object, Object> dictionary) {
+        boolean result = true;
+        if (!term.name.equals(name)) {
+            return false;
+        }
+
+        if (terms.size() != term.terms.size()) {
+            result = false;
+        } else {
+            for (int i = 0; i < terms.size(); i++) {
+                if (!terms.get(i).isSimilar(term.terms.get(i), dictionary)) {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     public boolean replace(Variable from, Variable to) {
@@ -89,5 +102,12 @@ public class Term {
             }
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (terms != null ? terms.hashCode() : 0);
+        return result;
     }
 }

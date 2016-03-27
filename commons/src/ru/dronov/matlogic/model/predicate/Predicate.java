@@ -32,13 +32,34 @@ public class Predicate extends Expression {
     }
 
     @Override
-    public boolean compare(Expression expression, Map<String, Expression> dictionary) {
+    public boolean compare(Expression expression, Map<Object, Object> dictionary) {
+        boolean result = true;
         if (dictionary.containsKey(name)) {
-            return dictionary.get(name).equals(expression);
+            result = dictionary.get(name).equals(expression);
+            if (!result) {
+                return false;
+            }
         } else {
+            result = true;
             dictionary.put(name, expression);
-            return true;
         }
+
+        if (expression instanceof Predicate) {
+            Predicate predicate = (Predicate) expression;
+            if (!terms.isEmpty() && !predicate.terms.isEmpty()) {
+                if (terms.size() != predicate.terms.size()) {
+                    result = false;
+                } else {
+                    for (int i = 0; i < terms.size(); i++) {
+                        if (!terms.get(i).isSimilar(predicate.terms.get(i), dictionary)) {
+                            result = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     @Override
@@ -79,7 +100,6 @@ public class Predicate extends Expression {
         return builder.toString();
     }
 
-
     @Override
     public boolean equals(Object obj) {
         if (this.getClass() != obj.getClass()) {
@@ -95,5 +115,12 @@ public class Predicate extends Expression {
             }
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (terms != null ? terms.hashCode() : 0);
+        return result;
     }
 }

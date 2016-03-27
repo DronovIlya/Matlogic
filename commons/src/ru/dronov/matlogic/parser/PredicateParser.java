@@ -131,7 +131,7 @@ public class PredicateParser extends Parser {
             nextToken();
             result = expressionTerm();
         } else {
-            String termName = getDescription();
+            String name = getDescription();
             List<Term> terms = new ArrayList<>();
             nextToken();
             if (getToken() == Token.LEFT_BRACKET) {
@@ -141,8 +141,10 @@ public class PredicateParser extends Parser {
                 } while (getToken() == Token.COMMA);
 
                 nextToken();
+                result = new Term(name, terms);
+            } else {
+                result = new Variable(name);
             }
-            result = new Term(termName, terms);
         }
         return result;
     }

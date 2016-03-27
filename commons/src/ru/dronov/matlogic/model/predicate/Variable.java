@@ -13,11 +13,11 @@ public class Variable extends Term {
     }
 
     @Override
-    public boolean isSimilar(Expression expression, Map<String, Expression> dictionary) {
+    public boolean isSimilar(Term term, Map<Object, Object> dictionary) {
         if (dictionary.containsKey(name)) {
-            return dictionary.get(name).equals(expression);
+            return dictionary.get(name).equals(term);
         } else {
-            dictionary.put(name, expression);
+            dictionary.put(name, term);
             return true;
         }
     }
@@ -44,6 +44,9 @@ public class Variable extends Term {
     @Override
     public boolean freeSubstitute(Variable from, Term to, Set<Variable> blocked) {
         if (this.equals(from)) {
+            if (to == null) {
+                System.out.println("OMG!!!!");
+            }
             for (Variable variable : to.getVariables()) {
                 if (blocked.contains(variable)) {
                     return false;
@@ -62,5 +65,7 @@ public class Variable extends Term {
     public String toString() {
         return name;
     }
+
+
 }
 

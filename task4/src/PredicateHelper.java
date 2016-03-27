@@ -16,20 +16,27 @@ public class PredicateHelper {
     private final HypothesisHolder holder;
     private final Axioms axioms;
 
+    /**
+     * Used for checking classical modus ponens
+     */
     private final List<Expression> proved = new ArrayList<>();
+    private final List<Expression> answer = new ArrayList<>();
     private final Map<Expression, List<Expression>> modusPonens = new HashMap<>();
 
-    private final Set<Variable> hypothesisVariables = new HashSet<>();
+    private final Set<Variable> hypothesisVariables;
 
     public int processedLines = 0;
 
     public PredicateHelper(HypothesisHolder holder) throws IOException {
         this.holder = holder;
         this.axioms = new Axioms();
+        this.hypothesisVariables = holder.alpha.getFreeVariables(new HashSet<>());
     }
 
-    public List<Expression> handle(List<Expression> proof) throws ResourceNotFound, RuleQuantifierException, SubstitutionException, UnknownException {
-        System.out.println("handle, proof.size() = " + proof.size());
+    public List<Expression> handle(List<Expression> proof) throws ResourceNotFound, RuleQuantifierException, SubstitutionException, UnknownException, AxiomQuantifierException, TermSubstituteException {
+        if (Main.DEBUG) {
+            System.out.println("handle, proof.size() = " + proof.size());
+        }
         for (Expression expression : proof) {
             processedLines++;
 
@@ -53,25 +60,32 @@ public class PredicateHelper {
                 continue;
             }
 
+            if (handleAxiom11(expression) || handleAxiom12(expression)) {
+                process(expression);
+                continue;
+            }
+
             if (handleModusPonensUniversal(expression)) {
                 process(expression);
                 continue;
             }
 
-            if (handleModusPonensExistance(expression)) {
+            if (handleModusPonensExistence(expression)) {
                 process(expression);
                 continue;
             }
 
-            throw new UnknownException();
+            throw new UnknownException(expression.toString());
         }
-        return proof;
+        return answer;
     }
 
     private boolean handleAlpha(Expression expression) throws ResourceNotFound {
         if (holder.alpha.equals(expression)) {
-            System.out.println("alpha equals expression");
-            proved.addAll(Replacer.replaceAimplA(expression));
+            if (Main.DEBUG) {
+                System.out.println("alpha equals expression");
+            }
+            answer.addAll(Replacer.replaceAimplA(expression));
             return true;
         }
         return false;
@@ -80,8 +94,10 @@ public class PredicateHelper {
     private boolean handleHypothesis(Expression expression) throws ResourceNotFound {
         for (Expression hypothesisEntry : holder.hypothesis) {
             if (hypothesisEntry.equals(expression)) {
-                System.out.println("expression contains in hypothesis = " + hypothesisEntry);
-                proved.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                if (Main.DEBUG) {
+                    System.out.println("expression contains in hypothesis = " + hypothesisEntry);
+                }
+                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
                 return true;
             }
         }
@@ -91,8 +107,10 @@ public class PredicateHelper {
     private boolean handleClassicalAxioms(Expression expression) throws ResourceNotFound {
         Expression result = axioms.handle(expression);
         if (result != null) {
-            System.out.println("expression is in classical axioms, result = " + result);
-            proved.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+            if (Main.DEBUG) {
+                System.out.println("expression is in classical axioms, result = " + result);
+            }
+            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
             return true;
         }
         return false;
@@ -101,13 +119,12 @@ public class PredicateHelper {
     /**
      * Axiom 11 : @x(ksi) -> (ksi[x := O]), where "O" free to substitute "x"
      */
-    private boolean handleAxiom11(Expression expression) throws AxiomQuantifierException {
+    private boolean handleAxiom11(Expression expression) throws AxiomQuantifierException, TermSubstituteException, ResourceNotFound {
         if (expression instanceof Implication) {
             Implication implication = (Implication) expression;
             if (implication.left instanceof Universal) {
-                System.out.println("handleAxiom11, expression satisfies axiom11");
 
-                Term variable = ((Universal) implication.left).term;
+                Variable variable = ((Universal) implication.left).term;
                 if (hypothesisVariables.contains(variable)) {
                     throw new AxiomQuantifierException(variable.name, expression.toString());
                 }
@@ -116,17 +133,87 @@ public class PredicateHelper {
                 Expression right = implication.right;
 
                 if (left.equals(right)) {
+                    if (Main.DEBUG) {
+                        System.out.println("expression satisfies axiom11");
+                    }
+                    answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
                     return true;
                 }
 
-
-
+                Map<Object, Object> map = new HashMap<>();
+                boolean compare = left.compare(right, map);
+                if (compare) {
+                    Term result = (Term) map.get(variable.name);
+                    if (result != null) {
+                        if (left.substitute(variable, result)) {
+                            if (hypothesisVariables.contains(variable)) {
+                                throw new AxiomQuantifierException(variable.toString(), expression.toString());
+                            } else {
+                                if (Main.DEBUG) {
+                                    System.out.println("expression satisfies axiom11");
+                                }
+                                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                                return true;
+                            }
+                        } else {
+                            throw new TermSubstituteException(result.toString(), expression.toString(), variable.toString());
+                        }
+                    }
+                }
             }
         }
         return false;
     }
 
-    private boolean handleAxiom12(Expression expression) {
+    /**
+     * Axiom 12 : (ksi[x := O]) -> ?x(ksi), where "O" free to substitute "x"
+     */
+    private boolean handleAxiom12(Expression expression) throws AxiomQuantifierException, ResourceNotFound, TermSubstituteException {
+        if (expression instanceof Implication) {
+            Implication implication = (Implication) expression;
+            if (implication.right instanceof Existence) {
+                if (Main.DEBUG) {
+                    System.out.println("expression satisfies axiom12");
+                }
+
+                Variable variable = ((Existence) implication.right).term;
+                if (hypothesisVariables.contains(variable)) {
+                    throw new AxiomQuantifierException(variable.name, expression.toString());
+                }
+
+                Expression left = ((Existence) implication.right).argument;
+                Expression right = implication.left;
+
+                if (left.equals(right)) {
+                    if (Main.DEBUG) {
+                        System.out.println("expression satisfies axiom12");
+                    }
+                    answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                    return true;
+                }
+
+                Map<Object, Object> map = new HashMap<>();
+                boolean compare = left.compare(right, map);
+                if (compare) {
+                    Term result = (Term) map.get(variable.name);
+                    if (result != null) {
+                        if (left.substitute(variable, result)) {
+                            if (hypothesisVariables.contains(variable)) {
+                                throw new AxiomQuantifierException(variable.toString(), expression.toString());
+                            } else {
+                                if (Main.DEBUG) {
+                                    System.out.println("expression satisfies axiom12");
+                                }
+                                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                                return true;
+                            }
+                        } else {
+                            throw new TermSubstituteException(result.toString(), expression.toString(), variable.toString());
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
@@ -135,7 +222,10 @@ public class PredicateHelper {
         if (list != null && !list.isEmpty()) {
             for (Expression entry : list) {
                 if (proved.contains(entry)) {
-                    proved.addAll(Replacer.replaceAimplC(holder.alpha, entry, expression));
+                    if (Main.DEBUG) {
+                        System.out.println("expression satisfies modus ponens");
+                    }
+                    answer.addAll(Replacer.replaceAimplC(holder.alpha, entry, expression));
                     return true;
                 }
             }
@@ -157,6 +247,11 @@ public class PredicateHelper {
         proved.add(expression);
     }
 
+    /**
+     * Additional modus ponens condition for predicate :
+     * (phi) -> (ksi)
+     * (phi) -> @x(ksi), where "x" not free-substitute to phi
+     */
     private boolean handleModusPonensUniversal(Expression expression) throws RuleQuantifierException, ResourceNotFound, SubstitutionException {
         if (expression instanceof Implication) {
             Implication implication = (Implication) expression;
@@ -171,7 +266,10 @@ public class PredicateHelper {
                         if (hypothesisVariables.contains(x)) {
                             throw new RuleQuantifierException("", x.toString(), expression.toString());
                         } else {
-                            proved.addAll(Replacer.replaceUniversalModusPonens(holder.alpha, right, left, x));
+                            if (Main.DEBUG) {
+                                System.out.println("expression satisfies modus ponens for Universal");
+                            }
+                            answer.addAll(Replacer.replaceUniversalModusPonens(holder.alpha, right, left, x));
                             return true;
                         }
                     } else {
@@ -183,7 +281,13 @@ public class PredicateHelper {
         return false;
     }
 
-    private boolean handleModusPonensExistance(Expression expression) throws RuleQuantifierException, SubstitutionException, ResourceNotFound {
+    /**
+     * Additional modus ponens condition for existence :
+     * (ksi) -> (phi)
+     * ?x(ksi) -> (phi), where "x" not free-substitute to phi
+     */
+
+    private boolean handleModusPonensExistence(Expression expression) throws RuleQuantifierException, SubstitutionException, ResourceNotFound {
         if (expression instanceof Implication) {
             Implication implication = (Implication) expression;
             if (implication.left instanceof Existence) {
@@ -197,7 +301,10 @@ public class PredicateHelper {
                         if (hypothesisVariables.contains(x)) {
                             throw new RuleQuantifierException("", x.toString(), expression.toString());
                         } else {
-                            proved.addAll(Replacer.replaceExistanceModusPonens(holder.alpha, right, left, x));
+                            if (Main.DEBUG) {
+                                System.out.println("expression satisfies modus ponens for Existence");
+                            }
+                            answer.addAll(Replacer.replaceExistanceModusPonens(holder.alpha, right, left, x));
                             return true;
                         }
                     } else {

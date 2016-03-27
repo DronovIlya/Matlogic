@@ -21,11 +21,10 @@ public abstract class Expression {
      * @param dictionary storage contains mapping from variables of first expression to variables of second expression
      * @return true if two expression are similar, false otherwise
      */
-    protected abstract boolean compare(Expression expression, Map<String, Expression> dictionary);
+    public abstract boolean compare(Expression expression, Map<Object, Object> dictionary);
     public boolean compare(Expression expression) {
         return compare(expression, new HashMap<>());
     }
-
     /**
      * Check whether a variable "from" can be free-replaced by "to" variable
      */
@@ -41,5 +40,10 @@ public abstract class Expression {
     protected abstract boolean substitute(Variable from, Term to, Set<Variable> blocked);
     public boolean substitute(Variable from, Term to) {
         return substitute(from, to, new HashSet<>());
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
     }
 }
