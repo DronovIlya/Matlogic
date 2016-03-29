@@ -1,6 +1,7 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 import ru.dronov.matlogic.model.base.Expression;
+import ru.dronov.matlogic.parser.ArithmeticParser;
 import ru.dronov.matlogic.parser.Parser;
 import ru.dronov.matlogic.parser.PredicateParser;
 
@@ -27,14 +28,35 @@ public class ParserTest {
         checkResult("A->B->C", "(A)->((B)->(C))");
     }
 
+    @Test
+    public void testArithParse1() throws IOException {
+        checkArithResult("a+0=a", "a+0=a");
+    }
+
+     @Test
+    public void testArithParse2() throws IOException {
+        checkArithResult("(0+a)'=a'->0+a'=a'", "((0+a)'=(a)')->(0+(a)'=(a)')");
+    }
+
     private void checkResult(String expression, String expected) throws IOException {
-        Expression test = parseExpression(expression);
+        Expression test = parsePredicateExpression(expression);
         assertEquals(expected, test.toString());
     }
 
-    private Expression parseExpression(String expression) throws IOException {
+    private void checkArithResult(String expression, String expected) throws IOException {
+        Expression test = parseArithExpression(expression);
+        assertEquals(expected, test.toString());
+    }
+
+    private Expression parsePredicateExpression(String expression) throws IOException {
         InputStream stream = new ByteArrayInputStream(expression.getBytes());
         Parser parser = new PredicateParser(stream);
+        return parser.parse();
+    }
+
+    private Expression parseArithExpression(String expression) throws IOException {
+        InputStream stream = new ByteArrayInputStream(expression.getBytes());
+        Parser parser = new ArithmeticParser(stream);
         return parser.parse();
     }
 }

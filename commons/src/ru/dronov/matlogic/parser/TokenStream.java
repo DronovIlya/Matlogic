@@ -41,6 +41,21 @@ public class TokenStream {
                 case '!':
                     result = Token.NOT;
                     break;
+                case '=':
+                    result = Token.EQUALS;
+                    break;
+                case '*':
+                    result = Token.MUL;
+                    break;
+                case '+':
+                    result = Token.PLUS;
+                    break;
+                case '0':
+                    result = Token.ZERO;
+                    break;
+                case '\'':
+                    result = Token.STROKE;
+                    break;
                 case '\n':
                     result = Token.NEW_LINE;
                     break;
@@ -66,6 +81,12 @@ public class TokenStream {
                     break;
                 case ')':
                     result = Token.RIGHT_BRACKET;
+                    break;
+                case '[':
+                    result = Token.LEFT_BRACKET_SQUARE;
+                    break;
+                case ']':
+                    result = Token.RIGHT_BRACKET_SQUARE;
                     break;
                 default:
                     if (token >= 'a' && token <= 'z') {

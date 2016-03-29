@@ -1,61 +1,57 @@
+import ru.dronov.matlogic.base.ArithmeticAxioms;
 import ru.dronov.matlogic.base.ClassicalAxioms;
-import ru.dronov.matlogic.base.Replacer;
 import ru.dronov.matlogic.exceptions.*;
 import ru.dronov.matlogic.model.*;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.predicate.Term;
 import ru.dronov.matlogic.model.Universal;
 import ru.dronov.matlogic.model.predicate.Variable;
-import ru.dronov.matlogic.parser.HypothesisHolder;
+import ru.dronov.matlogic.parser.Token;
 
 import java.io.IOException;
 import java.util.*;
 
-public class PredicateHelper {
+public class ArithmeticHelper {
 
-    private final HypothesisHolder holder;
-    private final ClassicalAxioms axioms;
+    private final ClassicalAxioms classicalAxioms;
+    private final ArithmeticAxioms arithmeticAxioms;
 
     /**
      * Used for checking classical modus ponens
      */
     private final List<Expression> proved = new ArrayList<>();
-    private final List<Expression> answer = new ArrayList<>();
     private final Map<Expression, List<Expression>> modusPonens = new HashMap<>();
-
-    private final Set<Variable> hypothesisVariables;
 
     public int processedLines = 0;
 
-    public PredicateHelper(HypothesisHolder holder) throws IOException {
-        this.holder = holder;
-        this.axioms = new ClassicalAxioms();
-        this.hypothesisVariables = holder.alpha.getFreeVariables(new HashSet<>());
+    public ArithmeticHelper() throws IOException {
+        this.classicalAxioms = new ClassicalAxioms();
+        this.arithmeticAxioms = new ArithmeticAxioms();
     }
 
-    public List<Expression> handle(List<Expression> proof) throws ResourceNotFound, RuleQuantifierException, SubstitutionException, UnknownException, AxiomQuantifierException, TermSubstituteException {
-        if (Task4Main.DEBUG) {
+    public void handle(List<Expression> proof) throws ResourceNotFound, RuleQuantifierException, SubstitutionException, UnknownException, AxiomQuantifierException, TermSubstituteException {
+        if (Task5Main.DEBUG) {
             System.out.println("handle, proof.size() = " + proof.size());
         }
         for (Expression expression : proof) {
             processedLines++;
-
-            if (handleAlpha(expression)) {
-                process(expression);
-                continue;
-            }
-
-            if (handleHypothesis(expression)) {
-                process(expression);
-                continue;
-            }
 
             if (handleClassicalAxioms(expression)) {
                 process(expression);
                 continue;
             }
 
+            if (handleArithmeticAxioms(expression)) {
+                process(expression);
+                continue;
+            }
+
             if (handleModusPonens(expression)) {
+                process(expression);
+                continue;
+            }
+
+            if (handleArithAxiom9(expression)) {
                 process(expression);
                 continue;
             }
@@ -77,40 +73,25 @@ public class PredicateHelper {
 
             throw new UnknownException(expression.toString());
         }
-        return answer;
     }
 
-    private boolean handleAlpha(Expression expression) throws ResourceNotFound {
-        if (holder.alpha.equals(expression)) {
-            if (Task4Main.DEBUG) {
-                System.out.println("alpha equals expression");
+    private boolean handleClassicalAxioms(Expression expression) throws ResourceNotFound {
+        Expression result = classicalAxioms.handle(expression);
+        if (result != null) {
+            if (Task5Main.DEBUG) {
+                System.out.println("expression is in classical classicalAxioms, result = " + result);
             }
-            answer.addAll(Replacer.replaceAimplA(expression));
             return true;
         }
         return false;
     }
 
-    private boolean handleHypothesis(Expression expression) throws ResourceNotFound {
-        for (Expression hypothesisEntry : holder.hypothesis) {
-            if (hypothesisEntry.equals(expression)) {
-                if (Task4Main.DEBUG) {
-                    System.out.println("expression contains in hypothesis = " + hypothesisEntry);
-                }
-                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean handleClassicalAxioms(Expression expression) throws ResourceNotFound {
-        Expression result = axioms.handle(expression);
+    private boolean handleArithmeticAxioms(Expression expression) throws ResourceNotFound {
+        Expression result = arithmeticAxioms.handle(expression);
         if (result != null) {
-            if (Task4Main.DEBUG) {
-                System.out.println("expression is in classical axioms, result = " + result);
+            if (Task5Main.DEBUG) {
+                System.out.println("expression is in classical classicalAxioms, result = " + result);
             }
-            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
             return true;
         }
         return false;
@@ -125,18 +106,13 @@ public class PredicateHelper {
             if (implication.left instanceof Universal) {
 
                 Variable variable = ((Universal) implication.left).term;
-                if (hypothesisVariables.contains(variable)) {
-                    throw new AxiomQuantifierException(variable.name, expression.toString());
-                }
-
                 Expression left = ((Universal) implication.left).argument;
                 Expression right = implication.right;
 
                 if (left.equals(right)) {
-                    if (Task4Main.DEBUG) {
+                    if (Task5Main.DEBUG) {
                         System.out.println("expression satisfies axiom11");
                     }
-                    answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
                     return true;
                 }
 
@@ -146,15 +122,7 @@ public class PredicateHelper {
                     Term result = (Term) map.get(variable.name);
                     if (result != null) {
                         if (left.substitute(variable, result)) {
-                            if (hypothesisVariables.contains(variable)) {
-                                throw new AxiomQuantifierException(variable.toString(), expression.toString());
-                            } else {
-                                if (Task4Main.DEBUG) {
-                                    System.out.println("expression satisfies axiom11");
-                                }
-                                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
-                                return true;
-                            }
+                            return true;
                         } else {
                             throw new TermSubstituteException(result.toString(), expression.toString(), variable.toString());
                         }
@@ -172,23 +140,18 @@ public class PredicateHelper {
         if (expression instanceof Implication) {
             Implication implication = (Implication) expression;
             if (implication.right instanceof Existence) {
-                if (Task4Main.DEBUG) {
+                if (Task5Main.DEBUG) {
                     System.out.println("expression satisfies axiom12");
                 }
 
                 Variable variable = ((Existence) implication.right).term;
-                if (hypothesisVariables.contains(variable)) {
-                    throw new AxiomQuantifierException(variable.name, expression.toString());
-                }
-
                 Expression left = ((Existence) implication.right).argument;
                 Expression right = implication.left;
 
                 if (left.equals(right)) {
-                    if (Task4Main.DEBUG) {
+                    if (Task5Main.DEBUG) {
                         System.out.println("expression satisfies axiom12");
                     }
-                    answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
                     return true;
                 }
 
@@ -198,15 +161,7 @@ public class PredicateHelper {
                     Term result = (Term) map.get(variable.name);
                     if (result != null) {
                         if (left.substitute(variable, result)) {
-                            if (hypothesisVariables.contains(variable)) {
-                                throw new AxiomQuantifierException(variable.toString(), expression.toString());
-                            } else {
-                                if (Task4Main.DEBUG) {
-                                    System.out.println("expression satisfies axiom12");
-                                }
-                                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
-                                return true;
-                            }
+                            return true;
                         } else {
                             throw new TermSubstituteException(result.toString(), expression.toString(), variable.toString());
                         }
@@ -222,10 +177,9 @@ public class PredicateHelper {
         if (list != null && !list.isEmpty()) {
             for (Expression entry : list) {
                 if (proved.contains(entry)) {
-                    if (Task4Main.DEBUG) {
+                    if (Task5Main.DEBUG) {
                         System.out.println("expression satisfies modus ponens");
                     }
-                    answer.addAll(Replacer.replaceAimplC(holder.alpha, entry, expression));
                     return true;
                 }
             }
@@ -263,15 +217,7 @@ public class PredicateHelper {
                 Implication p = new Implication(left, right);
                 if (proved.contains(p)) {
                     if (!left.replace(x, x)) {
-                        if (hypothesisVariables.contains(x)) {
-                            throw new RuleQuantifierException("", x.toString(), expression.toString());
-                        } else {
-                            if (Task4Main.DEBUG) {
-                                System.out.println("expression satisfies modus ponens for Universal");
-                            }
-                            answer.addAll(Replacer.replaceUniversalModusPonens(holder.alpha, right, left, x));
-                            return true;
-                        }
+                        return true;
                     } else {
                         throw new SubstitutionException(x.toString(), expression.toString());
                     }
@@ -298,17 +244,49 @@ public class PredicateHelper {
                 Implication p = new Implication(right, left);
                 if (proved.contains(p)) {
                     if (!left.replace(x, x)) {
-                        if (hypothesisVariables.contains(x)) {
-                            throw new RuleQuantifierException("", x.toString(), expression.toString());
-                        } else {
-                            if (Task4Main.DEBUG) {
-                                System.out.println("expression satisfies modus ponens for Existence");
-                            }
-                            answer.addAll(Replacer.replaceExistanceModusPonens(holder.alpha, right, left, x));
-                            return true;
-                        }
+                        return true;
                     } else {
                         throw new SubstitutionException(x.toString(), expression.toString());
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean handleArithAxiom9(Expression expression) {
+        if (expression instanceof Implication) {
+            Implication implication = (Implication) expression;
+            Expression right = implication.right;
+            Expression left = implication.left;
+            if (left instanceof And) {
+                And and = (And) left;
+                if (and.right instanceof Universal) {
+                    Universal universal = (Universal) and.right;
+                    Variable variable = universal.term;
+
+                    Map<Object, Object> map = new HashMap<>();
+                    boolean compare = right.compare(and.left, map);
+                    if (compare) {
+                        Term result = (Term) map.get(variable.name);
+                        Term zero = new Term(Token.ZERO.name(), new ArrayList<>());
+                        if (result != null && result.equals(zero)) {
+                            Expression base = universal.argument;
+                            if (base instanceof Implication) {
+                                Implication baseImpl = (Implication) base;
+
+                                map.clear();
+                                compare = right.compare(baseImpl.right, map);
+                                if (compare) {
+                                    result = (Term) map.get(variable.name);
+
+                                    Term stroke = new Term(Token.STROKE.name(), Collections.singletonList(variable));
+                                    if (result != null && result.equals(stroke) && baseImpl.left.equals(right)) {
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

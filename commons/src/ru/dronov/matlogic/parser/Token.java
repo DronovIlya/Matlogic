@@ -14,8 +14,17 @@ public enum Token {
     TERM("x"),
     PREDICATE("P"),
 
+    EQUALS("="),
+    MUL("*"),
+    PLUS("+"),
+    ZERO("0"),
+    STROKE("\'"),
+
+
     LEFT_BRACKET("("),
     RIGHT_BRACKET(")"),
+    LEFT_BRACKET_SQUARE("["),
+    RIGHT_BRACKET_SQUARE("]"),
     COMMA(","),
 
     NEW_LINE("\n"),

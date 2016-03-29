@@ -46,10 +46,11 @@ public class Variable extends Term {
         if (this.equals(from)) {
             if (to == null) {
                 System.out.println("OMG!!!!");
-            }
-            for (Variable variable : to.getVariables()) {
-                if (blocked.contains(variable)) {
-                    return false;
+            } else {
+                for (Variable variable : to.getVariables()) {
+                    if (blocked.contains(variable)) {
+                        return false;
+                    }
                 }
             }
         }

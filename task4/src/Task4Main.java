@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+public class Task4Main {
 
     public static final boolean DEBUG = false;
 
@@ -28,7 +28,7 @@ public class Main {
     private Parser parser;
     public PredicateHelper helper;
 
-    public Main() {
+    public Task4Main() {
     }
 
     public List<Expression> solver(String inputFile) throws IOException, ResourceNotFound, AxiomQuantifierException, TermSubstituteException, UnknownException, RuleQuantifierException, SubstitutionException {
@@ -75,7 +75,7 @@ public class Main {
             throw new IllegalArgumentException("fileName must be ended with suffix .in");
         }
         System.out.println("processing file : " + fileName);
-        Main solver = new Main();
+        Task4Main solver = new Task4Main();
         PrintWriter writer = new PrintWriter(fileName.replace(INPUT_FILE_SUFFIX, OUTPUT_FILE_SUFFIX));
         try {
             List<Expression> result = solver.solver(fileName);
