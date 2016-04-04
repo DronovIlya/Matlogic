@@ -13,16 +13,6 @@ public class Variable extends Term {
     }
 
     @Override
-    public boolean isSimilar(Term term, Map<Object, Object> dictionary) {
-        if (dictionary.containsKey(name)) {
-            return dictionary.get(name).equals(term);
-        } else {
-            dictionary.put(name, term);
-            return true;
-        }
-    }
-
-    @Override
     public boolean replace(Variable from, Variable to) {
         if (name.equals(from.name)) {
             name = to.name;
@@ -42,7 +32,7 @@ public class Variable extends Term {
     }
 
     @Override
-    public boolean freeSubstitute(Variable from, Term to, Set<Variable> blocked) {
+    public boolean substitute(Variable from, Term to, Set<Variable> blocked) {
         if (this.equals(from)) {
             if (to == null) {
                 System.out.println("OMG!!!!");
@@ -58,8 +48,27 @@ public class Variable extends Term {
     }
 
     @Override
+    public boolean compareWithEquals(Expression expression, Variable variable, Map<Object, Object> dictionary) {
+        if (expression instanceof Term && name.equals(variable.name)) {
+            if (!dictionary.containsKey(name)) {
+                dictionary.put(name, expression);
+                return true;
+            } else {
+                return dictionary.get(name).equals(expression);
+            }
+        }
+        if (expression.getClass() != Variable.class) {
+            return false;
+        }
+        return ((Variable)expression).name.equals(name);
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        return ((Variable)obj).name.equals(name);
     }
 
     @Override

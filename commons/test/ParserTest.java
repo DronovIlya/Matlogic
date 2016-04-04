@@ -1,9 +1,7 @@
 import org.junit.Test;
 import static org.junit.Assert.*;
 import ru.dronov.matlogic.model.base.Expression;
-import ru.dronov.matlogic.parser.ArithmeticParser;
-import ru.dronov.matlogic.parser.Parser;
-import ru.dronov.matlogic.parser.PredicateParser;
+import ru.dronov.matlogic.parser.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -49,14 +47,14 @@ public class ParserTest {
     }
 
     private Expression parsePredicateExpression(String expression) throws IOException {
-        InputStream stream = new ByteArrayInputStream(expression.getBytes());
-        Parser parser = new PredicateParser(stream);
+//        InputStream stream = new ByteArrayInputStream(argument.getBytes());
+        ParserNew parser = new PredicateParserNew();
         return parser.parse();
     }
 
     private Expression parseArithExpression(String expression) throws IOException {
-        InputStream stream = new ByteArrayInputStream(expression.getBytes());
-        Parser parser = new ArithmeticParser(stream);
-        return parser.parse();
+//        InputStream stream = new ByteArrayInputStream(argument.getBytes());
+        ParserNew parser = new ArithmeticParserNew();
+        return parser.parse(expression);
     }
 }

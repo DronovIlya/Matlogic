@@ -39,10 +39,7 @@ public abstract class Quantifier extends Expression {
 
     @Override
     public boolean compare(Expression expression, Map<Object, Object> dictionary) {
-        if (getClass() != expression.getClass()) {
-            return false;
-        }
-        return argument.compare(((Quantifier) expression).argument, dictionary);
+        return argument.compareInternal(((Quantifier) expression).argument, dictionary);
     }
 
     @Override
@@ -87,6 +84,14 @@ public abstract class Quantifier extends Expression {
             return false;
         }
         return argument.equals(quantifier.argument);
+    }
+
+    @Override
+    public boolean compareWithEquals(Expression expression, Variable variable, Map<Object, Object> dictionary) {
+        if (getClass() != expression.getClass()) {
+            return false;
+        }
+        return argument.compareWithEquals(expression, variable, dictionary);
     }
 
     @Override

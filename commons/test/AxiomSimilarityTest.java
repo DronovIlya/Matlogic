@@ -2,6 +2,7 @@ import org.junit.Test;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.parser.Parser;
 import ru.dronov.matlogic.parser.PredicateParser;
+import sun.security.util.AuthResources_zh_CN;
 
 import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
@@ -21,7 +22,7 @@ public class AxiomSimilarityTest {
     public void test2() throws IOException {
         Expression axiom = parseExpression("A->B->A");
         Expression expression = parseExpression("(B->C)->(D->E)->(B->A)");
-        assertEquals(false, axiom.compare(expression));
+        assertEquals(false, expression.compare(axiom));
     }
 
     @Test

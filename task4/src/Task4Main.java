@@ -1,14 +1,9 @@
 import ru.dronov.matlogic.exceptions.*;
 import ru.dronov.matlogic.model.base.Expression;
-import ru.dronov.matlogic.parser.HypothesisHolder;
-import ru.dronov.matlogic.parser.Parser;
-import ru.dronov.matlogic.parser.PredicateParser;
+import ru.dronov.matlogic.parser.*;
 import ru.dronov.matlogic.utils.Texts;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +20,10 @@ public class Task4Main {
             "-dir  dirname  = read and process all tests from given dir\n" +
             "IMPORTANT: filename must be ended with .in";
 
-    private Parser parser;
+    private PredicateParserNew parser;
     public PredicateHelper helper;
+
+    private HypothesisHolder holder;
 
     public Task4Main() {
     }
@@ -35,23 +32,32 @@ public class Task4Main {
         if (Texts.isEmpty(inputFile)) {
             throw new IllegalArgumentException("inputFile can't be empty");
         }
-        parser = new PredicateParser(inputFile);
-        HypothesisHolder holder = parser.parseHypothesis();
-        List<Expression> proof = readProof();
+        List<Expression> proof = readProof(inputFile);
 
         helper = new PredicateHelper(holder);
         return helper.handle(proof);
     }
 
-    private List<Expression> readProof() throws IOException {
+    private List<Expression> readProof(String file) throws IOException {
         List<Expression> result = new ArrayList<>();
-        while (true) {
-            Expression expression = parser.parse();
+
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line = reader.readLine();
+
+        parser = new PredicateParserNew(line);
+        holder = parser.parseHypothesis();
+
+        line = reader.readLine();
+        while (!Texts.isEmpty(line)) {
+            Expression expression = parser.parse(line);
             if (expression == null) {
-                break;
+                System.out.println("argument is null, argument = " + line);
+                throw new RuntimeException("can't be null");
             }
             result.add(expression);
+            line = reader.readLine();
         }
+
         return result;
     }
 
@@ -98,7 +104,7 @@ public class Task4Main {
     private static void solveSeveralTest(String directoryName) throws FileNotFoundException {
         File folder = new File(directoryName);
         File[] files = folder.listFiles();
-        if (files != null ) {
+        if (files != null) {
             for (File file : files) {
                 if (file.getName().endsWith(INPUT_FILE_SUFFIX)) {
                     solveOneTest(file.getAbsolutePath());

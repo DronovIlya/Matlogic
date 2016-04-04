@@ -38,7 +38,7 @@ public class ClassicalAxioms {
     @Nullable
     public Expression handle(Expression expression) {
         for (Expression axiom : axiomList) {
-            if (axiom.compare(expression)) {
+            if (expression.compare(axiom)) {
                 return axiom;
             }
         }

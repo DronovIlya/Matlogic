@@ -33,7 +33,8 @@ public class PredicateHelper {
         this.hypothesisVariables = holder.alpha.getFreeVariables(new HashSet<>());
     }
 
-    public List<Expression> handle(List<Expression> proof) throws ResourceNotFound, RuleQuantifierException, SubstitutionException, UnknownException, AxiomQuantifierException, TermSubstituteException {
+    public List<Expression> handle(List<Expression> proof) throws ResourceNotFound, RuleQuantifierException,
+            SubstitutionException, UnknownException, AxiomQuantifierException, TermSubstituteException {
         if (Task4Main.DEBUG) {
             System.out.println("handle, proof.size() = " + proof.size());
         }
@@ -83,7 +84,7 @@ public class PredicateHelper {
     private boolean handleAlpha(Expression expression) throws ResourceNotFound {
         if (holder.alpha.equals(expression)) {
             if (Task4Main.DEBUG) {
-                System.out.println("alpha equals expression");
+                System.out.println("alpha equals argument");
             }
             answer.addAll(Replacer.replaceAimplA(expression));
             return true;
@@ -95,7 +96,7 @@ public class PredicateHelper {
         for (Expression hypothesisEntry : holder.hypothesis) {
             if (hypothesisEntry.equals(expression)) {
                 if (Task4Main.DEBUG) {
-                    System.out.println("expression contains in hypothesis = " + hypothesisEntry);
+                    System.out.println("argument contains in hypothesis = " + hypothesisEntry);
                 }
                 answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
                 return true;
@@ -108,7 +109,7 @@ public class PredicateHelper {
         Expression result = axioms.handle(expression);
         if (result != null) {
             if (Task4Main.DEBUG) {
-                System.out.println("expression is in classical axioms, result = " + result);
+                System.out.println("argument is in classical axioms, result = " + result);
             }
             answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
             return true;
@@ -134,27 +135,23 @@ public class PredicateHelper {
 
                 if (left.equals(right)) {
                     if (Task4Main.DEBUG) {
-                        System.out.println("expression satisfies axiom11");
+                        System.out.println("argument satisfies axiom11");
                     }
                     answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
                     return true;
                 }
 
                 Map<Object, Object> map = new HashMap<>();
-                boolean compare = left.compare(right, map);
+                boolean compare = left.compareWithEquals(right, variable, map);
                 if (compare) {
                     Term result = (Term) map.get(variable.name);
                     if (result != null) {
                         if (left.substitute(variable, result)) {
-                            if (hypothesisVariables.contains(variable)) {
-                                throw new AxiomQuantifierException(variable.toString(), expression.toString());
-                            } else {
-                                if (Task4Main.DEBUG) {
-                                    System.out.println("expression satisfies axiom11");
-                                }
-                                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
-                                return true;
+                            if (Task4Main.DEBUG) {
+                                System.out.println("argument satisfies axiom11");
                             }
+                            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                            return true;
                         } else {
                             throw new TermSubstituteException(result.toString(), expression.toString(), variable.toString());
                         }
@@ -173,7 +170,7 @@ public class PredicateHelper {
             Implication implication = (Implication) expression;
             if (implication.right instanceof Existence) {
                 if (Task4Main.DEBUG) {
-                    System.out.println("expression satisfies axiom12");
+                    System.out.println("argument satisfies axiom12");
                 }
 
                 Variable variable = ((Existence) implication.right).term;
@@ -186,27 +183,23 @@ public class PredicateHelper {
 
                 if (left.equals(right)) {
                     if (Task4Main.DEBUG) {
-                        System.out.println("expression satisfies axiom12");
+                        System.out.println("argument satisfies axiom12");
                     }
                     answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
                     return true;
                 }
 
                 Map<Object, Object> map = new HashMap<>();
-                boolean compare = left.compare(right, map);
+                boolean compare = left.compareWithEquals(right, variable, map);
                 if (compare) {
                     Term result = (Term) map.get(variable.name);
                     if (result != null) {
                         if (left.substitute(variable, result)) {
-                            if (hypothesisVariables.contains(variable)) {
-                                throw new AxiomQuantifierException(variable.toString(), expression.toString());
-                            } else {
-                                if (Task4Main.DEBUG) {
-                                    System.out.println("expression satisfies axiom12");
-                                }
-                                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
-                                return true;
+                            if (Task4Main.DEBUG) {
+                                System.out.println("argument satisfies axiom12");
                             }
+                            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                            return true;
                         } else {
                             throw new TermSubstituteException(result.toString(), expression.toString(), variable.toString());
                         }
@@ -223,7 +216,7 @@ public class PredicateHelper {
             for (Expression entry : list) {
                 if (proved.contains(entry)) {
                     if (Task4Main.DEBUG) {
-                        System.out.println("expression satisfies modus ponens");
+                        System.out.println("argument satisfies modus ponens");
                     }
                     answer.addAll(Replacer.replaceAimplC(holder.alpha, entry, expression));
                     return true;
@@ -267,7 +260,7 @@ public class PredicateHelper {
                             throw new RuleQuantifierException("", x.toString(), expression.toString());
                         } else {
                             if (Task4Main.DEBUG) {
-                                System.out.println("expression satisfies modus ponens for Universal");
+                                System.out.println("argument satisfies modus ponens for Universal");
                             }
                             answer.addAll(Replacer.replaceUniversalModusPonens(holder.alpha, right, left, x));
                             return true;
@@ -302,7 +295,7 @@ public class PredicateHelper {
                             throw new RuleQuantifierException("", x.toString(), expression.toString());
                         } else {
                             if (Task4Main.DEBUG) {
-                                System.out.println("expression satisfies modus ponens for Existence");
+                                System.out.println("argument satisfies modus ponens for Existence");
                             }
                             answer.addAll(Replacer.replaceExistanceModusPonens(holder.alpha, right, left, x));
                             return true;

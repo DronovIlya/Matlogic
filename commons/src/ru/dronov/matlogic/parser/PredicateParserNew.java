@@ -1,29 +1,28 @@
 package ru.dronov.matlogic.parser;
 
-import com.sun.istack.internal.Nullable;
-import ru.dronov.matlogic.model.*;
+import ru.dronov.matlogic.model.Existence;
+import ru.dronov.matlogic.model.Negation;
+import ru.dronov.matlogic.model.Universal;
 import ru.dronov.matlogic.model.base.Expression;
-import ru.dronov.matlogic.model.predicate.*;
+import ru.dronov.matlogic.model.predicate.Predicate;
+import ru.dronov.matlogic.model.predicate.Term;
+import ru.dronov.matlogic.model.predicate.Variable;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PredicateParser extends Parser {
+public class PredicateParserNew extends ParserNew {
 
-    public PredicateParser(String filename) throws FileNotFoundException {
-        super(filename);
+    public PredicateParserNew(String hypothesis) {
+        super(hypothesis);
     }
 
-    public PredicateParser(InputStream stream) {
-        super(stream);
+    public PredicateParserNew() {
     }
 
-    @Override
     public HypothesisHolder parseHypothesis() throws IOException {
-        HypothesisHolder result = null;
+        HypothesisHolder holder = null;
         Expression expression = parse();
         if (getToken() == Token.COMMA || getToken() == Token.DERIVABLE) {
             List<Expression> hypothesis = new ArrayList<>();
@@ -36,64 +35,25 @@ public class PredicateParser extends Parser {
             Expression beta = parse();
             Expression alpha = hypothesis.get(hypothesis.size() - 1);
             hypothesis.remove(hypothesis.size() - 1);
-            result = new HypothesisHolder(hypothesis, alpha, beta);
+            holder = new HypothesisHolder(hypothesis, alpha, beta);
         }
-        return result;
+        return holder;
     }
 
-    @Nullable
     @Override
-    public Expression parse() throws IOException {
-        nextToken();
-        while (getToken() == Token.NEW_LINE) {
-            nextToken();
-        }
-        if (getToken() == Token.END_LINE) {
-            return null;
-        }
-        return expression();
-    }
-
-    private Expression expression() throws IOException {
-        Expression result = expressionOr();
-        if (getToken() == Token.IMPLICATION) {
-            nextToken();
-            return new Implication(result, expression());
-        }
-        return result;
-    }
-
-    private Expression expressionOr() throws IOException {
-        Expression result = expressionAnd();
-        if (getToken() == Token.OR) {
-            nextToken();
-            return new Or(result, expressionAnd());
-        }
-        return result;
-    }
-
-    private Expression expressionAnd() throws IOException {
-        Expression result = expressionUnary();
-        if (getToken() == Token.AND) {
-            nextToken();
-            return new And(result, expressionUnary());
-        }
-        return result;
-    }
-
-    private Expression expressionUnary() throws IOException {
+    protected Expression expressionUnary() throws IOException {
         switch (getToken()) {
             case NOT:
                 nextToken();
                 return new Negation(expressionUnary());
             case UNIVERSAL:
                 nextToken();
-                Variable term = new Variable(getDescription());
+                Variable term = new Variable(getTokenName());
                 nextToken();
                 return new Universal(term, expressionUnary());
             case EXISTENCE:
                 nextToken();
-                term = new Variable(getDescription());
+                term = new Variable(getTokenName());
                 nextToken();
                 return new Existence(term, expressionUnary());
             case LEFT_BRACKET:
@@ -110,7 +70,7 @@ public class PredicateParser extends Parser {
     }
 
     private Predicate expressionPredicate() throws IOException {
-        String predicateName = getDescription();
+        String predicateName = getTokenName();
         nextToken();
         if (getToken() == Token.LEFT_BRACKET) {
             List<Term> terms = new ArrayList<>();
@@ -131,7 +91,7 @@ public class PredicateParser extends Parser {
             nextToken();
             result = expressionTerm();
         } else {
-            String name = getDescription();
+            String name = getTokenName();
             List<Term> terms = new ArrayList<>();
             nextToken();
             if (getToken() == Token.LEFT_BRACKET) {

@@ -9,7 +9,7 @@ public enum Token {
 
     EXISTENCE("?"),
     UNIVERSAL("@"),
-    DERIVABLE("|-"),
+    DERIVABLE("$"),
 
     TERM("x"),
     PREDICATE("P"),
@@ -28,7 +28,7 @@ public enum Token {
     COMMA(","),
 
     NEW_LINE("\n"),
-    END_FILE("-1");
+    END_LINE("-1");
 
     private final String value;
 

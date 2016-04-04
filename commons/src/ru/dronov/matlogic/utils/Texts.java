@@ -9,4 +9,12 @@ public class Texts {
             return false;
         }
     }
+
+    public static boolean isLower(char ch) {
+        return ch >= 'a' && ch <= 'z';
+    }
+
+    public static boolean isDigit(char ch) {
+        return ch >= '0' && ch <= '9';
+    }
 }

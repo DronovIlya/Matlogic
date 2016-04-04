@@ -33,33 +33,12 @@ public class Predicate extends Expression {
 
     @Override
     public boolean compare(Expression expression, Map<Object, Object> dictionary) {
-        boolean result = true;
-        if (dictionary.containsKey(name)) {
-            result = dictionary.get(name).equals(expression);
-            if (!result) {
-                return false;
-            }
+        if (!dictionary.containsKey(this)) {
+            dictionary.put(this, expression);
+            return true;
         } else {
-            result = true;
-            dictionary.put(name, expression);
+            return expression.equals(dictionary.get(this));
         }
-
-        if (expression instanceof Predicate) {
-            Predicate predicate = (Predicate) expression;
-            if (!terms.isEmpty() && !predicate.terms.isEmpty()) {
-                if (terms.size() != predicate.terms.size()) {
-                    result = false;
-                } else {
-                    for (int i = 0; i < terms.size(); i++) {
-                        if (!terms.get(i).isSimilar(predicate.terms.get(i), dictionary)) {
-                            result = false;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        return result;
     }
 
     @Override
@@ -77,12 +56,29 @@ public class Predicate extends Expression {
     public boolean substitute(Variable from, Term to, Set<Variable> blocked) {
         boolean result = true;
         for (Term term : terms) {
-            if (!term.freeSubstitute(from, to, blocked)) {
+            if (!term.substitute(from, to, blocked)) {
                 result = false;
                 break;
             }
         }
         return result;
+    }
+
+    @Override
+    public boolean compareWithEquals(Expression expression, Variable variable, Map<Object, Object> dictionary) {
+        if (Predicate.class != expression.getClass()) {
+            return false;
+        }
+        Predicate predicate = (Predicate) expression;
+        if (!predicate.name.equals(name) || predicate.terms.size() != terms.size()) {
+            return false;
+        }
+        for (int i = 0; i < terms.size(); i++) {
+            if (!terms.get(i).compareWithEquals(predicate.terms.get(i), variable, dictionary)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

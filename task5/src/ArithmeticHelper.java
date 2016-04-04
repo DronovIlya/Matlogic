@@ -79,7 +79,7 @@ public class ArithmeticHelper {
         Expression result = classicalAxioms.handle(expression);
         if (result != null) {
             if (Task5Main.DEBUG) {
-                System.out.println("expression is in classical classicalAxioms, result = " + result);
+                System.out.println("argument is in classical classicalAxioms, result = " + result);
             }
             return true;
         }
@@ -90,7 +90,7 @@ public class ArithmeticHelper {
         Expression result = arithmeticAxioms.handle(expression);
         if (result != null) {
             if (Task5Main.DEBUG) {
-                System.out.println("expression is in classical classicalAxioms, result = " + result);
+                System.out.println("argument is in classical classicalAxioms, result = " + result);
             }
             return true;
         }
@@ -111,7 +111,7 @@ public class ArithmeticHelper {
 
                 if (left.equals(right)) {
                     if (Task5Main.DEBUG) {
-                        System.out.println("expression satisfies axiom11");
+                        System.out.println("argument satisfies axiom11");
                     }
                     return true;
                 }
@@ -141,7 +141,7 @@ public class ArithmeticHelper {
             Implication implication = (Implication) expression;
             if (implication.right instanceof Existence) {
                 if (Task5Main.DEBUG) {
-                    System.out.println("expression satisfies axiom12");
+                    System.out.println("argument satisfies axiom12");
                 }
 
                 Variable variable = ((Existence) implication.right).term;
@@ -150,7 +150,7 @@ public class ArithmeticHelper {
 
                 if (left.equals(right)) {
                     if (Task5Main.DEBUG) {
-                        System.out.println("expression satisfies axiom12");
+                        System.out.println("argument satisfies axiom12");
                     }
                     return true;
                 }
@@ -178,7 +178,7 @@ public class ArithmeticHelper {
             for (Expression entry : list) {
                 if (proved.contains(entry)) {
                     if (Task5Main.DEBUG) {
-                        System.out.println("expression satisfies modus ponens");
+                        System.out.println("argument satisfies modus ponens");
                     }
                     return true;
                 }

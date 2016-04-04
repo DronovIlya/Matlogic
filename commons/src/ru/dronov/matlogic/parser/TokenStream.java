@@ -26,7 +26,7 @@ public class TokenStream {
         }
 
         if (token < 0) {
-            result = Token.END_FILE;
+            result = Token.END_LINE;
         } else {
             switch (token) {
                 case '?':

@@ -29,11 +29,8 @@ public abstract class BinaryExpression extends Expression {
 
     @Override
     public boolean compare(Expression expression, Map<Object, Object> dictionary) {
-        if (getClass() != expression.getClass()) {
-            return false;
-        }
-        return left.compare(((BinaryExpression) expression).left, dictionary) &&
-                right.compare(((BinaryExpression) expression).right, dictionary);
+        return left.compareInternal(((BinaryExpression) expression).left, dictionary) &&
+                right.compareInternal(((BinaryExpression) expression).right, dictionary);
     }
 
     @Override
@@ -58,6 +55,15 @@ public abstract class BinaryExpression extends Expression {
         } else {
             return left.equals(((BinaryExpression) obj).left) && right.equals(((BinaryExpression) obj).right);
         }
+    }
+
+    @Override
+    public boolean compareWithEquals(Expression expression, Variable variable, Map<Object, Object> dictionary) {
+        if (expression.getClass() != getClass()) {
+            return false;
+        }
+        return left.compareWithEquals(expression, variable, dictionary) &&
+                right.compareWithEquals(expression, variable, dictionary);
     }
 
     @Override
