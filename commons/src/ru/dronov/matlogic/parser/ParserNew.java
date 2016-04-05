@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public abstract class ParserNew {
 
-    private TokenParser tokenParser;
+    protected TokenParser tokenParser;
 
     protected ParserNew() {
     }

@@ -2,6 +2,8 @@ import ru.dronov.matlogic.base.ArithmeticAxioms;
 import ru.dronov.matlogic.base.ClassicalAxioms;
 import ru.dronov.matlogic.exceptions.*;
 import ru.dronov.matlogic.model.*;
+import ru.dronov.matlogic.model.arithmetic.Stroke;
+import ru.dronov.matlogic.model.arithmetic.Zero;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.predicate.Term;
 import ru.dronov.matlogic.model.Universal;
@@ -117,7 +119,7 @@ public class ArithmeticHelper {
                 }
 
                 Map<Object, Object> map = new HashMap<>();
-                boolean compare = left.compare(right, map);
+                boolean compare = left.compareWithEquals(right, variable, map);
                 if (compare) {
                     Term result = (Term) map.get(variable.name);
                     if (result != null) {
@@ -156,7 +158,7 @@ public class ArithmeticHelper {
                 }
 
                 Map<Object, Object> map = new HashMap<>();
-                boolean compare = left.compare(right, map);
+                boolean compare = left.compareWithEquals(right, variable, map);
                 if (compare) {
                     Term result = (Term) map.get(variable.name);
                     if (result != null) {
@@ -266,21 +268,21 @@ public class ArithmeticHelper {
                     Variable variable = universal.term;
 
                     Map<Object, Object> map = new HashMap<>();
-                    boolean compare = right.compare(and.left, map);
+                    boolean compare = right.compareWithEquals(and.left, variable, map);
                     if (compare) {
                         Term result = (Term) map.get(variable.name);
-                        Term zero = new Term(Token.ZERO.name(), new ArrayList<>());
+                        Zero zero = new Zero();
                         if (result != null && result.equals(zero)) {
                             Expression base = universal.argument;
                             if (base instanceof Implication) {
                                 Implication baseImpl = (Implication) base;
 
                                 map.clear();
-                                compare = right.compare(baseImpl.right, map);
+                                compare = right.compareWithEquals(baseImpl.right, variable, map);
                                 if (compare) {
                                     result = (Term) map.get(variable.name);
 
-                                    Term stroke = new Term(Token.STROKE.name(), Collections.singletonList(variable));
+                                    Stroke stroke = new Stroke(Collections.singletonList(variable));
                                     if (result != null && result.equals(stroke) && baseImpl.left.equals(right)) {
                                         return true;
                                     }

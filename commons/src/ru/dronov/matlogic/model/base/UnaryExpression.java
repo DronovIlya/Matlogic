@@ -52,7 +52,7 @@ public abstract class UnaryExpression extends Expression {
         if (getClass() != expression.getClass()) {
             return false;
         }
-        return argument.compareWithEquals(expression, variable, dictionary);
+        return argument.compareWithEquals(((UnaryExpression)expression).argument, variable, dictionary);
     }
 
     @Override

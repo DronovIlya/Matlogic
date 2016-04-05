@@ -3,8 +3,7 @@ package ru.dronov.matlogic.base;
 import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.predicate.Variable;
-import ru.dronov.matlogic.parser.Parser;
-import ru.dronov.matlogic.parser.PredicateParser;
+import ru.dronov.matlogic.parser.PredicateParserNew;
 import ru.dronov.matlogic.utils.Texts;
 
 import java.io.*;
@@ -69,8 +68,7 @@ public class Replacer {
 
     // TODO: remove it, rewrite parser
     private static Expression parseStringAxiom(String axiom) throws IOException {
-        InputStream stream = new ByteArrayInputStream(axiom.getBytes());
-        Parser parser = new PredicateParser(stream);
-        return parser.parse();
+        PredicateParserNew parser = new PredicateParserNew();
+        return parser.parse(axiom);
     }
 }

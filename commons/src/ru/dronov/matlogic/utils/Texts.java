@@ -10,11 +10,11 @@ public class Texts {
         }
     }
 
-    public static boolean isLower(char ch) {
+    public static boolean isLower(int ch) {
         return ch >= 'a' && ch <= 'z';
     }
 
-    public static boolean isDigit(char ch) {
+    public static boolean isDigit(int ch) {
         return ch >= '0' && ch <= '9';
     }
 }
