@@ -32,7 +32,7 @@ public class ArithmeticTokenParser extends TokenParser {
             switch (current) {
                 case '(':
                     push(characters.size());
-                    characters.add(current);
+                    pushChar(current);
                     break;
                 case ')':
                     current = super.nextChar();
@@ -43,6 +43,7 @@ public class ArithmeticTokenParser extends TokenParser {
                         popIndex();
                         pushChar(')');
                     }
+
                     if (current != -1) {
                         super.decChar();
                     }
@@ -78,6 +79,8 @@ public class ArithmeticTokenParser extends TokenParser {
 
     private int popLastIndex() {
         if (lastIndex >= characters.size()) {
+            lastIndex = 0;
+            characters.clear();
             return -1;
         }
         int result = characters.get(lastIndex);
