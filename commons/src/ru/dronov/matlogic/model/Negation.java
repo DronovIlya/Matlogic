@@ -1,10 +1,11 @@
 package ru.dronov.matlogic.model;
 
 import ru.dronov.matlogic.base.Replacer;
+import ru.dronov.matlogic.exceptions.ParserException;
 import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.base.UnaryExpression;
-import ru.dronov.matlogic.parser.Token;
+import ru.dronov.matlogic.parser.Lexeme;
 
 import java.util.List;
 import java.util.Map;
@@ -18,12 +19,12 @@ public class Negation extends UnaryExpression {
 
     @Override
     protected String getSign() {
-        return Token.NOT.getValue();
+        return Lexeme.NOT.getValue();
     }
 
     @Override
     public boolean prove(Map<String, Boolean> values, List<Expression> current,
-                         Set<String> dictionary) throws ResourceNotFound {
+                         Set<String> dictionary) throws ResourceNotFound, ParserException {
         if (dictionary.contains(this.toString()) ||
                 dictionary.contains(new Negation(this).toString())) {
             return dictionary.contains(this.toString());

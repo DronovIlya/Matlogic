@@ -1,5 +1,6 @@
 package ru.dronov.matlogic.model.base;
 
+import ru.dronov.matlogic.exceptions.ParserException;
 import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.model.predicate.Term;
 import ru.dronov.matlogic.model.predicate.Variable;
@@ -54,12 +55,12 @@ public abstract class UnaryExpression extends Expression {
         if (getClass() != expression.getClass()) {
             return false;
         }
-        return argument.compareWithEquals(((UnaryExpression)expression).argument, variable, dictionary);
+        return argument.compareWithEquals(((UnaryExpression) expression).argument, variable, dictionary);
     }
 
     @Override
     public boolean prove(Map<String, Boolean> values, List<Expression> current,
-                         Set<String> dictionary) throws ResourceNotFound {
+                         Set<String> dictionary) throws ResourceNotFound, ParserException {
         return false;
     }
 

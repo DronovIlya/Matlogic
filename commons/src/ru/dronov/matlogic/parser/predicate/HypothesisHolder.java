@@ -1,4 +1,4 @@
-package ru.dronov.matlogic.parser;
+package ru.dronov.matlogic.parser.predicate;
 
 import ru.dronov.matlogic.model.base.Expression;
 

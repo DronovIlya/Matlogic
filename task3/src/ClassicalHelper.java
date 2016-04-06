@@ -1,4 +1,5 @@
 import ru.dronov.matlogic.base.Replacer;
+import ru.dronov.matlogic.exceptions.ParserException;
 import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.exceptions.UnknownException;
 import ru.dronov.matlogic.exceptions.UntruthException;
@@ -16,7 +17,7 @@ public class ClassicalHelper {
     public ClassicalHelper() throws IOException {
     }
 
-    public List<Expression> handle(Expression toProve) throws ResourceNotFound, UnknownException, IOException, UntruthException {
+    public List<Expression> handle(Expression toProve) throws ResourceNotFound, UnknownException, IOException, UntruthException, ParserException {
         List<Expression> result;
 
         List<String> variables = findAllVariables(toProve);
@@ -28,7 +29,7 @@ public class ClassicalHelper {
                                              List<String> variables,
                                              int position,
                                              Map<String, Boolean> hypothesisValues,
-                                             List<Expression> hypothesis) throws ResourceNotFound, UnknownException, IOException, UntruthException {
+                                             List<Expression> hypothesis) throws ResourceNotFound, UnknownException, IOException, UntruthException, ParserException {
         if (position == variables.size()) {
             List<Expression> result = new ArrayList<>();
             boolean isTrue = expression.prove(hypothesisValues, result);
@@ -62,7 +63,7 @@ public class ClassicalHelper {
         return proof;
     }
 
-    private List<Expression> deduction(List<Expression> proof, List<Expression> hypothesis) throws IOException, ResourceNotFound, UnknownException {
+    private List<Expression> deduction(List<Expression> proof, List<Expression> hypothesis) throws IOException, ResourceNotFound, UnknownException, ParserException {
         DeductionHelper deduction = new DeductionHelper();
         return deduction.handle(proof, hypothesis);
     }

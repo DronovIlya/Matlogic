@@ -8,7 +8,6 @@ import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.predicate.Term;
 import ru.dronov.matlogic.model.Universal;
 import ru.dronov.matlogic.model.predicate.Variable;
-import ru.dronov.matlogic.parser.Token;
 
 import java.io.IOException;
 import java.util.*;
@@ -26,7 +25,7 @@ public class ArithmeticHelper {
 
     public int processedLines = 0;
 
-    public ArithmeticHelper() throws IOException {
+    public ArithmeticHelper() throws IOException, ParserException {
         this.classicalAxioms = new ClassicalAxioms();
         this.arithmeticAxioms = new ArithmeticAxioms();
     }

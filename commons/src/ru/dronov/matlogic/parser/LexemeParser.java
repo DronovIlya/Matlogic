@@ -2,70 +2,68 @@ package ru.dronov.matlogic.parser;
 
 import ru.dronov.matlogic.utils.Texts;
 
-public class TokenParser {
+public class LexemeParser {
 
     private final String input;
 
     private int currentIndex = -1;
 
-    public Token currentTokenType;
-    public String currentTokenName;
+    public Lexeme type;
+    public String lexemeName;
 
-    public TokenParser(String input) {
+    public LexemeParser(String input) {
         this.input = input.replace("|-", "$").replace("->", "-");
     }
 
     public void nextToken() {
-        currentTokenType = parseNextToken();
-        while (currentTokenType == Token.NEW_LINE) {
-            currentTokenType = parseNextToken();
+        type = parseNextToken();
+        while (type == Lexeme.NEW_LINE) {
+            type = parseNextToken();
         }
     }
 
-    private Token parseNextToken() {
+    private Lexeme parseNextToken() {
         int ch = nextChar();
         if (ch == -1) {
-            return Token.END_LINE;
+            return Lexeme.END_LINE;
         } else {
             switch (ch) {
                 case '!':
-                    return Token.NOT;
+                    return Lexeme.NOT;
                 case '&':
-                    return Token.AND;
+                    return Lexeme.AND;
                 case '|':
-                    return Token.OR;
+                    return Lexeme.OR;
                 case '-':
-                    return Token.IMPLICATION;
+                    return Lexeme.IMPLICATION;
                 case '?':
-                    return Token.EXISTENCE;
+                    return Lexeme.EXISTENCE;
                 case '@':
-                    return Token.UNIVERSAL;
+                    return Lexeme.UNIVERSAL;
                 case '$':
-                    return Token.DERIVABLE;
+                    return Lexeme.DERIVABLE;
                 case '=':
-                    return Token.EQUALS;
+                    return Lexeme.EQUALS;
                 case '*':
-                    return Token.MUL;
+                    return Lexeme.MUL;
                 case '+':
-                    return Token.PLUS;
+                    return Lexeme.PLUS;
                 case '0':
-                    return Token.ZERO;
+                    return Lexeme.ZERO;
                 case '\'':
-                    return Token.STROKE;
+                    return Lexeme.STROKE;
                 case '(':
-                    return Token.LEFT_BRACKET;
-                case '[':
-                    return Token.LEFT_BRACKET_SQUARE;
+                    return Lexeme.LEFT_BRACKET;
+                case '#':
+                    return Lexeme.SKIP;
                 case ')':
-                    return Token.RIGHT_BRACKET;
-                case ']':
-                    return Token.RIGHT_BRACKET_SQUARE;
+                    return Lexeme.RIGHT_BRACKET;
                 case ',':
-                    return Token.COMMA;
+                    return Lexeme.COMMA;
                 case '\n':
-                    return Token.NEW_LINE;
+                    return Lexeme.NEW_LINE;
                 default:
-                    Token result = Texts.isLower(ch) ? Token.TERM : Token.PREDICATE;
+                    Lexeme result = Texts.isLower(ch) ? Lexeme.TERM : Lexeme.PREDICATE;
                     String name = new String(new char[]{(char)ch});
 
                     ch = nextChar();
@@ -77,7 +75,7 @@ public class TokenParser {
                     if (ch != -1) {
                         decChar();
                     }
-                    this.currentTokenName = name;
+                    this.lexemeName = name;
                     return result;
             }
         }

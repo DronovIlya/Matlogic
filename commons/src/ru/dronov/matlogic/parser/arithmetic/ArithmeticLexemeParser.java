@@ -1,15 +1,17 @@
-package ru.dronov.matlogic.parser;
+package ru.dronov.matlogic.parser.arithmetic;
+
+import ru.dronov.matlogic.parser.LexemeParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArithmeticTokenParser extends TokenParser {
+public class ArithmeticLexemeParser extends LexemeParser {
 
     private final List<Integer> characters = new ArrayList<>();
     private final List<Integer> indexes = new ArrayList<>();
     private int lastIndex;
 
-    public ArithmeticTokenParser(String input) {
+    public ArithmeticLexemeParser(String input) {
         super(input);
     }
 
@@ -37,8 +39,8 @@ public class ArithmeticTokenParser extends TokenParser {
                 case ')':
                     current = super.nextChar();
                     if (current == '\'' || current == '*' || current == '+' || current == '=') {
-                        pushChar(']');
-                        update(popIndex(), '[');
+                        pushChar('#');
+                        update(popIndex(), '#');
                     } else {
                         popIndex();
                         pushChar(')');

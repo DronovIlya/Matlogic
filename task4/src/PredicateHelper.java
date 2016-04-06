@@ -6,7 +6,7 @@ import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.predicate.Term;
 import ru.dronov.matlogic.model.Universal;
 import ru.dronov.matlogic.model.predicate.Variable;
-import ru.dronov.matlogic.parser.HypothesisHolder;
+import ru.dronov.matlogic.parser.predicate.HypothesisHolder;
 
 import java.io.IOException;
 import java.util.*;
@@ -27,14 +27,14 @@ public class PredicateHelper {
 
     public int processedLines = 0;
 
-    public PredicateHelper(HypothesisHolder holder) throws IOException {
+    public PredicateHelper(HypothesisHolder holder) throws IOException, ParserException {
         this.holder = holder;
         this.axioms = new ClassicalAxioms();
         this.hypothesisVariables = holder.alpha.getFreeVariables(new HashSet<>());
     }
 
     public List<Expression> handle(List<Expression> proof) throws ResourceNotFound, RuleQuantifierException,
-            SubstitutionException, UnknownException, AxiomQuantifierException, TermSubstituteException {
+            SubstitutionException, UnknownException, AxiomQuantifierException, TermSubstituteException, ParserException {
         if (Task4Main.DEBUG) {
             System.out.println("handle, proof.size() = " + proof.size());
         }
@@ -81,7 +81,7 @@ public class PredicateHelper {
         return answer;
     }
 
-    private boolean handleAlpha(Expression expression) throws ResourceNotFound {
+    private boolean handleAlpha(Expression expression) throws ResourceNotFound, ParserException {
         if (holder.alpha.equals(expression)) {
             if (Task4Main.DEBUG) {
                 System.out.println("alpha equals argument");
@@ -92,7 +92,7 @@ public class PredicateHelper {
         return false;
     }
 
-    private boolean handleHypothesis(Expression expression) throws ResourceNotFound {
+    private boolean handleHypothesis(Expression expression) throws ResourceNotFound, ParserException {
         for (Expression hypothesisEntry : holder.hypothesis) {
             if (hypothesisEntry.equals(expression)) {
                 if (Task4Main.DEBUG) {
@@ -105,7 +105,7 @@ public class PredicateHelper {
         return false;
     }
 
-    private boolean handleClassicalAxioms(Expression expression) throws ResourceNotFound {
+    private boolean handleClassicalAxioms(Expression expression) throws ResourceNotFound, ParserException {
         Expression result = axioms.handle(expression);
         if (result != null) {
             if (Task4Main.DEBUG) {
@@ -120,7 +120,7 @@ public class PredicateHelper {
     /**
      * Axiom 11 : @x(ksi) -> (ksi[x := O]), where "O" free to substitute "x"
      */
-    private boolean handleAxiom11(Expression expression) throws AxiomQuantifierException, TermSubstituteException, ResourceNotFound {
+    private boolean handleAxiom11(Expression expression) throws AxiomQuantifierException, TermSubstituteException, ResourceNotFound, ParserException {
         if (expression instanceof Implication) {
             Implication implication = (Implication) expression;
             if (implication.left instanceof Universal) {
@@ -165,7 +165,7 @@ public class PredicateHelper {
     /**
      * Axiom 12 : (ksi[x := O]) -> ?x(ksi), where "O" free to substitute "x"
      */
-    private boolean handleAxiom12(Expression expression) throws AxiomQuantifierException, ResourceNotFound, TermSubstituteException {
+    private boolean handleAxiom12(Expression expression) throws AxiomQuantifierException, ResourceNotFound, TermSubstituteException, ParserException {
         if (expression instanceof Implication) {
             Implication implication = (Implication) expression;
             if (implication.right instanceof Existence) {
@@ -210,7 +210,7 @@ public class PredicateHelper {
         return false;
     }
 
-    private boolean handleModusPonens(Expression expression) throws ResourceNotFound {
+    private boolean handleModusPonens(Expression expression) throws ResourceNotFound, ParserException {
         List<Expression> list = modusPonens.get(expression);
         if (list != null && !list.isEmpty()) {
             for (Expression entry : list) {
@@ -245,7 +245,7 @@ public class PredicateHelper {
      * (phi) -> (ksi)
      * (phi) -> @x(ksi), where "x" not free-substitute to phi
      */
-    private boolean handleModusPonensUniversal(Expression expression) throws RuleQuantifierException, ResourceNotFound, SubstitutionException {
+    private boolean handleModusPonensUniversal(Expression expression) throws RuleQuantifierException, ResourceNotFound, SubstitutionException, ParserException {
         if (expression instanceof Implication) {
             Implication implication = (Implication) expression;
             if (implication.right instanceof Universal) {
@@ -280,7 +280,7 @@ public class PredicateHelper {
      * ?x(ksi) -> (phi), where "x" not free-substitute to phi
      */
 
-    private boolean handleModusPonensExistence(Expression expression) throws RuleQuantifierException, SubstitutionException, ResourceNotFound {
+    private boolean handleModusPonensExistence(Expression expression) throws RuleQuantifierException, SubstitutionException, ResourceNotFound, ParserException {
         if (expression instanceof Implication) {
             Implication implication = (Implication) expression;
             if (implication.left instanceof Existence) {

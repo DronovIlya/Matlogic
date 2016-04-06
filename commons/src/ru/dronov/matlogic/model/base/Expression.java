@@ -1,5 +1,6 @@
 package ru.dronov.matlogic.model.base;
 
+import ru.dronov.matlogic.exceptions.ParserException;
 import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.model.predicate.Predicate;
 import ru.dronov.matlogic.model.predicate.Term;
@@ -62,8 +63,8 @@ public abstract class Expression {
      * @param dictionary used for avoiding duplications
      */
     public abstract boolean prove(Map<String, Boolean> values, List<Expression> current,
-                                  Set<String> dictionary) throws ResourceNotFound;
-    public boolean prove(Map<String, Boolean> values, List<Expression> current) throws ResourceNotFound {
+                                  Set<String> dictionary) throws ResourceNotFound, ParserException;
+    public boolean prove(Map<String, Boolean> values, List<Expression> current) throws ResourceNotFound, ParserException {
         return prove(values, current, new HashSet<>());
     }
 

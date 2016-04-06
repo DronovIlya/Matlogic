@@ -3,7 +3,7 @@ package ru.dronov.matlogic.model;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.base.Quantifier;
 import ru.dronov.matlogic.model.predicate.Variable;
-import ru.dronov.matlogic.parser.Token;
+import ru.dronov.matlogic.parser.Lexeme;
 
 public class Universal extends Quantifier {
 
@@ -13,6 +13,6 @@ public class Universal extends Quantifier {
 
     @Override
     protected String getQuantifier() {
-        return Token.UNIVERSAL.getValue();
+        return Lexeme.UNIVERSAL.getValue();
     }
 }

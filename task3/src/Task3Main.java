@@ -25,7 +25,7 @@ public class Task3Main {
     public Task3Main() {
     }
 
-    public List<Expression> solver(String inputFile) throws IOException, ResourceNotFound, AxiomQuantifierException, TermSubstituteException, UnknownException, RuleQuantifierException, SubstitutionException, UntruthException {
+    public List<Expression> solver(String inputFile) throws IOException, ResourceNotFound, AxiomQuantifierException, TermSubstituteException, UnknownException, RuleQuantifierException, SubstitutionException, UntruthException, ParserException {
         if (Texts.isEmpty(inputFile)) {
             throw new IllegalArgumentException("inputFile can't be empty");
         }
@@ -35,7 +35,7 @@ public class Task3Main {
         return helper.handle(toProve);
     }
 
-    private Expression readProof(String file) throws IOException {
+    private Expression readProof(String file) throws IOException, ParserException {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line = reader.readLine();
 

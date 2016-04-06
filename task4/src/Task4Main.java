@@ -1,6 +1,7 @@
 import ru.dronov.matlogic.exceptions.*;
 import ru.dronov.matlogic.model.base.Expression;
-import ru.dronov.matlogic.parser.*;
+import ru.dronov.matlogic.parser.predicate.HypothesisHolder;
+import ru.dronov.matlogic.parser.predicate.PredicateParser;
 import ru.dronov.matlogic.utils.Texts;
 
 import java.io.*;
@@ -28,7 +29,7 @@ public class Task4Main {
     public Task4Main() {
     }
 
-    public List<Expression> solver(String inputFile) throws IOException, ResourceNotFound, AxiomQuantifierException, TermSubstituteException, UnknownException, RuleQuantifierException, SubstitutionException {
+    public List<Expression> solver(String inputFile) throws IOException, ResourceNotFound, AxiomQuantifierException, TermSubstituteException, UnknownException, RuleQuantifierException, SubstitutionException, ParserException {
         if (Texts.isEmpty(inputFile)) {
             throw new IllegalArgumentException("inputFile can't be empty");
         }
@@ -38,7 +39,7 @@ public class Task4Main {
         return helper.handle(proof);
     }
 
-    private List<Expression> readProof(String file) throws IOException {
+    private List<Expression> readProof(String file) throws IOException, ParserException {
         List<Expression> result = new ArrayList<>();
 
         BufferedReader reader = new BufferedReader(new FileReader(file));

@@ -1,5 +1,6 @@
 import ru.dronov.matlogic.base.ClassicalAxioms;
 import ru.dronov.matlogic.base.Replacer;
+import ru.dronov.matlogic.exceptions.ParserException;
 import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.exceptions.UnknownException;
 import ru.dronov.matlogic.model.Implication;
@@ -22,11 +23,11 @@ public class DeductionHelper {
     private Expression alpha;
     private List<Expression> hypothesis;
 
-    public DeductionHelper() throws IOException {
+    public DeductionHelper() throws IOException, ParserException {
         this.axioms = new ClassicalAxioms();
     }
 
-    public List<Expression> handle(List<Expression> proof, List<Expression> hypothesis) throws ResourceNotFound, UnknownException {
+    public List<Expression> handle(List<Expression> proof, List<Expression> hypothesis) throws ResourceNotFound, UnknownException, ParserException {
         this.alpha = hypothesis.get(hypothesis.size() - 1);
         this.hypothesis = hypothesis;
 
@@ -60,7 +61,7 @@ public class DeductionHelper {
         return answer;
     }
 
-    private boolean handleAlpha(Expression expression) throws ResourceNotFound {
+    private boolean handleAlpha(Expression expression) throws ResourceNotFound, ParserException {
         if (alpha.equals(expression)) {
             if (Task3Main.DEBUG) {
                 System.out.println("alpha equals argument");
@@ -71,7 +72,7 @@ public class DeductionHelper {
         return false;
     }
 
-    private boolean handleHypothesis(Expression expression) throws ResourceNotFound {
+    private boolean handleHypothesis(Expression expression) throws ResourceNotFound, ParserException {
         for (Expression hypothesisEntry : hypothesis) {
             if (hypothesisEntry.equals(expression)) {
                 if (Task3Main.DEBUG) {
@@ -84,7 +85,7 @@ public class DeductionHelper {
         return false;
     }
 
-    private boolean handleClassicalAxioms(Expression expression) throws ResourceNotFound {
+    private boolean handleClassicalAxioms(Expression expression) throws ResourceNotFound, ParserException {
         Expression result = axioms.handle(expression);
         if (result != null) {
             if (Task3Main.DEBUG) {
@@ -96,7 +97,7 @@ public class DeductionHelper {
         return false;
     }
 
-    private boolean handleModusPonens(Expression expression) throws ResourceNotFound {
+    private boolean handleModusPonens(Expression expression) throws ResourceNotFound, ParserException {
         List<Expression> list = modusPonens.get(expression);
         if (list != null && !list.isEmpty()) {
             for (Expression entry : list) {

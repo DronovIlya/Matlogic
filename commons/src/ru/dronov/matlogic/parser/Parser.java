@@ -1,75 +1,103 @@
 package ru.dronov.matlogic.parser;
 
+import ru.dronov.matlogic.exceptions.ParserException;
 import ru.dronov.matlogic.model.*;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.predicate.Variable;
-import ru.dronov.matlogic.utils.Texts;
 
 import java.io.IOException;
 
 public abstract class Parser {
 
-    protected TokenParser tokenParser;
+    protected LexemeParser lexemParser;
 
     protected Parser() {
     }
 
     protected Parser(String input) {
-        tokenParser = new TokenParser(input);
+        lexemParser = new LexemeParser(input);
     }
 
-    public Expression parse(String input) throws IOException {
-        tokenParser = new TokenParser(input);
+    public Expression parse(String input) throws IOException, ParserException {
+        lexemParser = new LexemeParser(input);
         return parse();
     }
 
-    public void nextToken() {
-        tokenParser.nextToken();
+    public void next() {
+        lexemParser.nextToken();
     }
 
-    public Token getToken() {
-        return tokenParser.currentTokenType;
+    public Lexeme getLexeme() {
+        return lexemParser.type;
     }
 
-    public String getTokenName() {
-        return tokenParser.currentTokenName;
+    public String getLexemeName() {
+        return lexemParser.lexemeName;
     }
 
 
-    public Expression parse() throws IOException {
-        nextToken();
-        if (getToken() == Token.END_LINE) {
+    public Expression parse() throws IOException, ParserException {
+        next();
+        if (getLexeme() == Lexeme.END_LINE) {
             return null;
         }
         return expression();
     }
 
-    protected Expression expression() throws IOException {
+    protected Expression expression() throws IOException, ParserException {
         Expression result = expressionOr();
-        if (getToken() == Token.IMPLICATION) {
-            nextToken();
+        if (getLexeme() == Lexeme.IMPLICATION) {
+            next();
             return new Implication(result, expression());
         }
         return result;
     }
 
-    protected Expression expressionOr() throws IOException {
+    protected Expression expressionOr() throws IOException, ParserException {
         Expression result = expressionAnd();
-        if (getToken() == Token.OR) {
-            nextToken();
+        if (getLexeme() == Lexeme.OR) {
+            next();
             return new Or(result, expressionAnd());
         }
         return result;
     }
 
-    protected Expression expressionAnd() throws IOException {
+    protected Expression expressionAnd() throws IOException, ParserException {
         Expression result = expressionUnary();
-        if (getToken() == Token.AND) {
-            nextToken();
+        if (getLexeme() == Lexeme.AND) {
+            next();
             return new And(result, expressionUnary());
         }
         return result;
     }
 
-    protected abstract Expression expressionUnary() throws IOException;
+    protected Expression expressionUnary() throws IOException, ParserException {
+        switch (getLexeme()) {
+            case NOT:
+                next();
+                return new Negation(expressionUnary());
+            case UNIVERSAL:
+            case EXISTENCE:
+                Lexeme lexeme = getLexeme();
+                next();
+                Variable term = new Variable(getLexemeName());
+                next();
+
+                if (lexeme == Lexeme.UNIVERSAL) {
+                    return new Universal(term, expressionUnary());
+                } else {
+                    return new Existence(term, expressionUnary());
+                }
+            case LEFT_BRACKET:
+                next();
+                Expression expr = expression();
+                next();
+                return expr;
+            default:
+                return expressionPredicate();
+        }
+    }
+
+    protected abstract Expression expressionPredicate() throws IOException, ParserException;
+
 }

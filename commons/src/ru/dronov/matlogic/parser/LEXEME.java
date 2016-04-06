@@ -1,6 +1,6 @@
 package ru.dronov.matlogic.parser;
 
-public enum Token {
+public enum Lexeme {
 
     NOT("!"),
     AND("&"),
@@ -23,8 +23,7 @@ public enum Token {
 
     LEFT_BRACKET("("),
     RIGHT_BRACKET(")"),
-    LEFT_BRACKET_SQUARE("["),
-    RIGHT_BRACKET_SQUARE("]"),
+    SKIP("#"),
     COMMA(","),
 
     NEW_LINE("\n"),
@@ -32,7 +31,7 @@ public enum Token {
 
     private final String value;
 
-    Token(String value) {
+    Lexeme(String value) {
         this.value = value;
     }
 
