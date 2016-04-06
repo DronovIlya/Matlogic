@@ -24,7 +24,7 @@ public class DeductionHelper {
     private List<Expression> hypothesis;
 
     public DeductionHelper() throws IOException, ParserException {
-        this.axioms = new ClassicalAxioms();
+        this.axioms = new ClassicalAxioms(ClassicalAxioms.Type.CLASSICAL);
     }
 
     public List<Expression> handle(List<Expression> proof, List<Expression> hypothesis) throws ResourceNotFound, UnknownException, ParserException {
@@ -66,7 +66,7 @@ public class DeductionHelper {
             if (Task3Main.DEBUG) {
                 System.out.println("alpha equals argument");
             }
-            answer.addAll(Replacer.replaceAimplA(expression));
+            answer.addAll(Replacer.replaceAimplA(expression, true));
             return true;
         }
         return false;
@@ -78,7 +78,7 @@ public class DeductionHelper {
                 if (Task3Main.DEBUG) {
                     System.out.println("argument contains in hypothesis = " + hypothesisEntry);
                 }
-                answer.addAll(Replacer.replaceAimplB(expression, alpha));
+                answer.addAll(Replacer.replaceAimplB(expression, alpha, true));
                 return true;
             }
         }
@@ -91,7 +91,7 @@ public class DeductionHelper {
             if (Task3Main.DEBUG) {
                 System.out.println("argument is in classical axioms, result = " + result);
             }
-            answer.addAll(Replacer.replaceAimplB(expression, alpha));
+            answer.addAll(Replacer.replaceAimplB(expression, alpha, true));
             return true;
         }
         return false;
@@ -105,7 +105,7 @@ public class DeductionHelper {
                     if (Task3Main.DEBUG) {
                         System.out.println("argument satisfies modus ponens");
                     }
-                    answer.addAll(Replacer.replaceAimplC(alpha, entry, expression));
+                    answer.addAll(Replacer.replaceAimplC(alpha, entry, expression, true));
                     return true;
                 }
             }

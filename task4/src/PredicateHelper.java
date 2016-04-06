@@ -29,7 +29,7 @@ public class PredicateHelper {
 
     public PredicateHelper(HypothesisHolder holder) throws IOException, ParserException {
         this.holder = holder;
-        this.axioms = new ClassicalAxioms();
+        this.axioms = new ClassicalAxioms(ClassicalAxioms.Type.PREDICATE);
         this.hypothesisVariables = holder.alpha.getFreeVariables(new HashSet<>());
     }
 
@@ -218,7 +218,7 @@ public class PredicateHelper {
                     if (Task4Main.DEBUG) {
                         System.out.println("argument satisfies modus ponens");
                     }
-                    answer.addAll(Replacer.replaceAimplC(holder.alpha, entry, expression));
+                    answer.addAll(Replacer.replaceAimplC(holder.alpha, entry, expression, false));
                     return true;
                 }
             }

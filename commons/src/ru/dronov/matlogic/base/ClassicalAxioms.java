@@ -3,7 +3,10 @@ package ru.dronov.matlogic.base;
 import com.sun.istack.internal.Nullable;
 import ru.dronov.matlogic.exceptions.ParserException;
 import ru.dronov.matlogic.model.base.Expression;
+import ru.dronov.matlogic.parser.ClassicalParser;
+import ru.dronov.matlogic.parser.Parser;
 import ru.dronov.matlogic.parser.arithmetic.ArithmeticParser;
+import ru.dronov.matlogic.parser.predicate.PredicateParser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,10 +29,10 @@ public class ClassicalAxioms {
 
     private final List<Expression> axiomList;
 
-    public ClassicalAxioms() throws IOException, ParserException {
+    public ClassicalAxioms(Type type) throws IOException, ParserException {
         axiomList = new ArrayList<>(AXIOM_LIST.length);
         for (String axiom : AXIOM_LIST) {
-            axiomList.add(parseStringAxiom(axiom));
+            axiomList.add(parseAxiom(axiom, type));
         }
     }
 
@@ -43,8 +46,37 @@ public class ClassicalAxioms {
         return null;
     }
 
-    private Expression parseStringAxiom(String axiom) throws IOException, ParserException {
-        ArithmeticParser parser = new ArithmeticParser();
+    private Expression parseAxiom(String axiom, Type type) throws IOException, ParserException {
+        switch (type) {
+            case CLASSICAL:
+                return parseClassicalAxiom(axiom);
+            case PREDICATE:
+                return parsePredicateAxiom(axiom);
+            case ARITHMETIC:
+                return parseArithAxiom(axiom);
+            default:
+                throw new IllegalArgumentException("unknown type = " + type);
+        }
+    }
+
+    private Expression parseClassicalAxiom(String axiom) throws IOException, ParserException {
+        Parser parser = new ClassicalParser();
         return parser.parse(axiom);
+    }
+
+    private Expression parsePredicateAxiom(String axiom) throws IOException, ParserException {
+        Parser parser = new PredicateParser();
+        return parser.parse(axiom);
+    }
+
+    private Expression parseArithAxiom(String axiom) throws IOException, ParserException {
+        Parser parser = new ArithmeticParser();
+        return parser.parse(axiom);
+    }
+
+    public enum Type {
+        CLASSICAL,
+        PREDICATE,
+        ARITHMETIC
     }
 }

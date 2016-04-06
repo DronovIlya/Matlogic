@@ -42,20 +42,16 @@ public class Replacer {
         return replaceExpressions(RESOURCE_DEFAULT_PATH + "a_not_a_b", true, A, B);
     }
 
-    public static List<Expression> replaceAimplA(Expression A) throws ResourceNotFound, ParserException {
-        return replaceExpressions(RESOURCE_DEFAULT_PATH + "a_impl_a", true, A);
+    public static List<Expression> replaceAimplA(Expression A, boolean classical) throws ResourceNotFound, ParserException {
+        return replaceExpressions(RESOURCE_DEFAULT_PATH + "a_impl_a", classical, A);
     }
 
-    public static List<Expression> replaceAimplAPredicate(Expression A) throws ResourceNotFound, ParserException {
-        return replace(RESOURCE_DEFAULT_PATH + "a_impl_a", A);
+    public static List<Expression> replaceAimplB(Expression A, Expression B, boolean classical) throws ResourceNotFound, ParserException {
+        return replaceExpressions(RESOURCE_DEFAULT_PATH + "b_impl_a", classical, A, B);
     }
 
-    public static List<Expression> replaceAimplB(Expression A, Expression B) throws ResourceNotFound, ParserException {
-        return replace(RESOURCE_DEFAULT_PATH + "b_impl_a", A, B);
-    }
-
-    public static List<Expression> replaceAimplC(Expression A, Expression B, Expression C) throws ResourceNotFound, ParserException {
-        return replace(RESOURCE_DEFAULT_PATH + "a_impl_c", A, B, C);
+    public static List<Expression> replaceAimplC(Expression A, Expression B, Expression C, boolean classical) throws ResourceNotFound, ParserException {
+        return replaceExpressions(RESOURCE_DEFAULT_PATH + "a_impl_c", classical, A, B, C);
     }
 
     public static List<Expression> replaceUniversalModusPonens(Expression A, Expression B, Expression C, Variable x) throws ResourceNotFound, ParserException {

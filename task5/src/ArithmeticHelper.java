@@ -26,7 +26,7 @@ public class ArithmeticHelper {
     public int processedLines = 0;
 
     public ArithmeticHelper() throws IOException, ParserException {
-        this.classicalAxioms = new ClassicalAxioms();
+        this.classicalAxioms = new ClassicalAxioms(ClassicalAxioms.Type.ARITHMETIC);
         this.arithmeticAxioms = new ArithmeticAxioms();
     }
 
