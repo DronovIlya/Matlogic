@@ -1,5 +1,6 @@
 package ru.dronov.matlogic.model.predicate;
 
+import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.model.base.Expression;
 
 import java.util.*;
@@ -79,6 +80,12 @@ public class Predicate extends Expression {
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean prove(Map<String, Boolean> values, List<Expression> current,
+                         Set<String> dictionary) throws ResourceNotFound {
+        return false;
     }
 
     @Override

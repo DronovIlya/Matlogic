@@ -1,9 +1,11 @@
 package ru.dronov.matlogic.model.base;
 
+import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.model.predicate.Term;
 import ru.dronov.matlogic.model.predicate.Variable;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -99,6 +101,13 @@ public abstract class Quantifier extends Expression {
         int result = term != null ? term.hashCode() : 0;
         result = 31 * result + (argument != null ? argument.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public boolean prove(Map<String, Boolean> values, List<Expression> current,
+                         Set<String> dictionary) throws ResourceNotFound {
+        // never called
+        return false;
     }
 
     /**

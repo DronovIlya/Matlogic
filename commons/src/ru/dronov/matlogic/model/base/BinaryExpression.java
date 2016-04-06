@@ -1,9 +1,11 @@
 package ru.dronov.matlogic.model.base;
 
+import ru.dronov.matlogic.base.Replacer;
 import ru.dronov.matlogic.model.predicate.Term;
 import ru.dronov.matlogic.model.predicate.Variable;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,7 +47,7 @@ public abstract class BinaryExpression extends Expression {
 
     @Override
     public String toString() {
-        return "(" + left + ")" + getOperator() + "(" + right + ")";
+        return "(" + "(" + left + ")" + getOperator() + "(" + right + ")" + ")";
     }
 
     @Override

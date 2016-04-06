@@ -1,5 +1,7 @@
 package ru.dronov.matlogic.model.predicate;
 
+import ru.dronov.matlogic.exceptions.ResourceNotFound;
+import ru.dronov.matlogic.model.Negation;
 import ru.dronov.matlogic.model.base.Expression;
 
 import java.util.*;
@@ -69,6 +71,26 @@ public class Variable extends Term {
             return false;
         }
         return ((Variable)obj).name.equals(name);
+    }
+
+    @Override
+    public boolean prove(Map<String, Boolean> values, List<Expression> current,
+                         Set<String> dictionary) throws ResourceNotFound {
+        if (dictionary.contains(this.toString()) ||
+                dictionary.contains(new Negation(this).toString())) {
+            return dictionary.contains(this.toString());
+        }
+
+        boolean result = values.get(name);
+        if (result) {
+            current.add(this);
+            dictionary.add(this.toString());
+            return true;
+        } else {
+            current.add(new Negation(this));
+            dictionary.add(new Negation(this).toString());
+            return false;
+        }
     }
 
     @Override

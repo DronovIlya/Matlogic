@@ -86,7 +86,7 @@ public class PredicateHelper {
             if (Task4Main.DEBUG) {
                 System.out.println("alpha equals argument");
             }
-            answer.addAll(Replacer.replaceAimplA(expression));
+            answer.addAll(Replacer.replaceAimplAPredicate(expression));
             return true;
         }
         return false;

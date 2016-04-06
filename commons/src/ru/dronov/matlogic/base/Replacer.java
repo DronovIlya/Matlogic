@@ -3,8 +3,10 @@ package ru.dronov.matlogic.base;
 import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.predicate.Variable;
+import ru.dronov.matlogic.parser.ClassicalParser;
 import ru.dronov.matlogic.parser.Parser;
 import ru.dronov.matlogic.parser.PredicateParser;
+import ru.dronov.matlogic.parser.PredicateParserNew;
 import ru.dronov.matlogic.utils.Texts;
 
 import java.io.*;
@@ -15,7 +17,37 @@ public class Replacer {
 
     private static final String RESOURCE_DEFAULT_PATH = "/Users/ilya.dronov/ifmo/matlogic/matlogic_2.0/commons/src/ru/dronov/matlogic/base/resource/";
 
+    public static List<Expression> replaceAnd(Expression A, Expression B, boolean a, boolean b) throws ResourceNotFound {
+        String path = RESOURCE_DEFAULT_PATH + "and/";
+        String suffix = (a ? "" : "not_") + "a" + "_and_" + (b ? "" : "not_") + "b";
+        return replaceExpressions(path + suffix, true, A, B);
+    }
+
+    public static List<Expression> replaceImpl(Expression A, Expression B, boolean a, boolean b) throws ResourceNotFound {
+        String path = RESOURCE_DEFAULT_PATH + "implication/";
+        String suffix = (a ? "" : "not_") + "a" + "_impl_" + (b ? "" : "not_") + "b";
+        return replaceExpressions(path + suffix, true, A, B);
+    }
+
+    public static List<Expression> replaceOr(Expression A, Expression B, boolean a, boolean b) throws ResourceNotFound {
+        String path = RESOURCE_DEFAULT_PATH + "or/";
+        String suffix = (a ? "" : "not_") + "a" + "_or_" + (b ? "" : "not_") + "b";
+        return replaceExpressions(path + suffix, true, A, B);
+    }
+
+    public static List<Expression> replaceNot(Expression A) throws ResourceNotFound {
+        return replaceExpressions(RESOURCE_DEFAULT_PATH + "not/not_not_a", true, A);
+    }
+
+    public static List<Expression> replaceANotA_B(Expression A, Expression B) throws ResourceNotFound {
+        return replaceExpressions(RESOURCE_DEFAULT_PATH + "a_not_a_b", true, A, B);
+    }
+
     public static List<Expression> replaceAimplA(Expression A) throws ResourceNotFound {
+        return replaceExpressions(RESOURCE_DEFAULT_PATH + "a_impl_a", true, A);
+    }
+
+    public static List<Expression> replaceAimplAPredicate(Expression A) throws ResourceNotFound {
         return replace(RESOURCE_DEFAULT_PATH + "a_impl_a", A);
     }
 
@@ -36,6 +68,10 @@ public class Replacer {
     }
 
     private static List<Expression> replace(String resource, Object... args) throws ResourceNotFound {
+        return replaceExpressions(resource, false, args);
+    }
+
+    private static List<Expression> replaceExpressions(String resource, boolean useClassicalParser, Object... args) throws ResourceNotFound {
         try (BufferedReader reader = new BufferedReader(new FileReader(resource))) {
             String firstLine = reader.readLine();
             String[] variables = firstLine.split(" ");
@@ -57,7 +93,7 @@ public class Replacer {
                         line = line.replace(variables[i], args[i].toString());
                     }
                 }
-                result.add(parseStringAxiom(line));
+                result.add(parseExpression(line, useClassicalParser));
             }
 
             return result;
@@ -67,10 +103,21 @@ public class Replacer {
         }
     }
 
-    // TODO: remove it, rewrite parser
-    private static Expression parseStringAxiom(String axiom) throws IOException {
-        InputStream stream = new ByteArrayInputStream(axiom.getBytes());
-        Parser parser = new PredicateParser(stream);
-        return parser.parse();
+    private static Expression parseExpression(String expression, boolean useClassicalParser) throws IOException {
+        if (useClassicalParser) {
+            return parseClasicalAxiom(expression);
+        } else {
+            return parsePredicateAxiom(expression);
+        }
+    }
+
+    private static Expression parsePredicateAxiom(String axiom) throws IOException {
+        PredicateParserNew parser = new PredicateParserNew();
+        return parser.parse(axiom);
+    }
+
+    private static Expression parseClasicalAxiom(String axiom) throws IOException {
+        ClassicalParser parser = new ClassicalParser();
+        return parser.parse(axiom);
     }
 }

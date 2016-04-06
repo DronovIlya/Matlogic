@@ -1,13 +1,11 @@
 package ru.dronov.matlogic.model.base;
 
+import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.model.predicate.Predicate;
 import ru.dronov.matlogic.model.predicate.Term;
 import ru.dronov.matlogic.model.predicate.Variable;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Expression {
 
@@ -55,6 +53,19 @@ public abstract class Expression {
     }
 
     public abstract boolean compareWithEquals(Expression expression, Variable variable, Map<Object, Object> dictionary);
+
+
+    /**
+     * Used in Task3
+     * @param values contains values for prop variables
+     * @param current proof for current bundle
+     * @param dictionary used for avoiding duplications
+     */
+    public abstract boolean prove(Map<String, Boolean> values, List<Expression> current,
+                                  Set<String> dictionary) throws ResourceNotFound;
+    public boolean prove(Map<String, Boolean> values, List<Expression> current) throws ResourceNotFound {
+        return prove(values, current, new HashSet<>());
+    }
 
     @Override
     public int hashCode() {
