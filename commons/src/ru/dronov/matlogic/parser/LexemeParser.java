@@ -68,7 +68,7 @@ public class LexemeParser {
 
                     ch = nextChar();
                     while (ch != -1 && Texts.isDigit(ch)) {
-                        name += ch;
+                        name += (ch - '0');
                         ch = nextChar();
                     }
 

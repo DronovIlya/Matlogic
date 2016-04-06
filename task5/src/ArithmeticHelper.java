@@ -37,6 +37,11 @@ public class ArithmeticHelper {
         for (Expression expression : proof) {
             processedLines++;
 
+            if (processedLines == 11753) {
+                int x = 5;
+
+            }
+
             if (handleClassicalAxioms(expression)) {
                 process(expression);
                 continue;

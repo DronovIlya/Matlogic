@@ -44,7 +44,12 @@ public class Task5Main {
 
         parser = new ArithmeticParser();
         String line = reader.readLine();
+        int processedLine = 0;
         while (!Texts.isEmpty(line)) {
+            processedLine++;
+            if (processedLine == 11753) {
+                int x = 5;
+            }
             Expression expression = parser.parse(line);
             if (expression == null) {
                 System.out.println("argument is null, argument = " + line);

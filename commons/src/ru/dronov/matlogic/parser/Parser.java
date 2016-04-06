@@ -55,18 +55,18 @@ public abstract class Parser {
 
     protected Expression expressionOr() throws IOException, ParserException {
         Expression result = expressionAnd();
-        if (getLexeme() == Lexeme.OR) {
+        while (getLexeme() == Lexeme.OR) {
             next();
-            return new Or(result, expressionAnd());
+            result = new Or(result, expressionAnd());
         }
         return result;
     }
 
     protected Expression expressionAnd() throws IOException, ParserException {
         Expression result = expressionUnary();
-        if (getLexeme() == Lexeme.AND) {
+        while (getLexeme() == Lexeme.AND) {
             next();
-            return new And(result, expressionUnary());
+            result = new And(result, expressionUnary());
         }
         return result;
     }
