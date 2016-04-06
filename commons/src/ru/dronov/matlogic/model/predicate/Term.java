@@ -26,7 +26,7 @@ public class Term extends Predicate {
 
     @Override
     public boolean equals(Object obj) {
-        if (this.getClass() != obj.getClass()) {
+        if (obj.getClass() != Term.class) {
             return false;
         }
         Term term = (Term) obj;

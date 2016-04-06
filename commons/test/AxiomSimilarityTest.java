@@ -1,8 +1,6 @@
 import org.junit.Test;
 import ru.dronov.matlogic.model.base.Expression;
-import ru.dronov.matlogic.parser.Parser;
-import ru.dronov.matlogic.parser.PredicateParser;
-import sun.security.util.AuthResources_zh_CN;
+import ru.dronov.matlogic.parser.PredicateParserNew;
 
 import static org.junit.Assert.*;
 import java.io.ByteArrayInputStream;
@@ -33,8 +31,7 @@ public class AxiomSimilarityTest {
     }
 
     private Expression parseExpression(String expression) throws IOException {
-        InputStream stream = new ByteArrayInputStream(expression.getBytes());
-        Parser parser = new PredicateParser(stream);
-        return parser.parse();
+        PredicateParserNew parser = new PredicateParserNew();
+        return parser.parse(expression);
     }
 }

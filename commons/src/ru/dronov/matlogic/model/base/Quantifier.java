@@ -93,7 +93,7 @@ public abstract class Quantifier extends Expression {
         if (getClass() != expression.getClass()) {
             return false;
         }
-        return argument.compareWithEquals(expression, variable, dictionary);
+        return argument.compareWithEquals(((Quantifier)expression).argument, variable, dictionary);
     }
 
     @Override

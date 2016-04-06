@@ -23,8 +23,8 @@ public class TokenParser {
     }
 
     private Token parseNextToken() {
-        char ch = nextChar();
-        if (currentIndex == input.length()) {
+        int ch = nextChar();
+        if (ch == -1) {
             return Token.END_LINE;
         } else {
             switch (ch) {
@@ -66,16 +66,16 @@ public class TokenParser {
                     return Token.NEW_LINE;
                 default:
                     Token result = Texts.isLower(ch) ? Token.TERM : Token.PREDICATE;
-                    String name = new String(new char[]{ch});
+                    String name = new String(new char[]{(char)ch});
 
                     ch = nextChar();
-                    while (currentIndex < input.length() && ch != 0 && Texts.isDigit(ch)) {
+                    while (ch != -1 && Texts.isDigit(ch)) {
                         name += ch;
                         ch = nextChar();
                     }
 
-                    if (currentIndex != input.length()) {
-                        currentIndex--;
+                    if (ch != -1) {
+                        decChar();
                     }
                     this.currentTokenName = name;
                     return result;
@@ -83,12 +83,18 @@ public class TokenParser {
         }
     }
 
-    protected char nextChar() {
-        char result = 0;
+    protected int nextChar() {
+        int result = -1;
         currentIndex++;
         if (currentIndex < input.length()) {
             result = input.charAt(currentIndex);
         }
         return result;
+    }
+
+    protected void decChar() {
+        if (currentIndex > 0) {
+            currentIndex--;
+        }
     }
 }

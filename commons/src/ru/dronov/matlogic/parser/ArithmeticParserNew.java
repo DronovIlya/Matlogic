@@ -17,7 +17,18 @@ import java.util.List;
 
 public class ArithmeticParserNew extends ParserNew {
 
+    public ArithmeticParserNew(String input) {
+        tokenParser = new ArithmeticTokenParser(input);
+    }
+
     public ArithmeticParserNew() {
+        super();
+    }
+
+    @Override
+    public Expression parse(String input) throws IOException {
+        tokenParser = new ArithmeticTokenParser(input);
+        return parse();
     }
 
     @Override

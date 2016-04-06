@@ -1,14 +1,10 @@
 import ru.dronov.matlogic.exceptions.*;
 import ru.dronov.matlogic.model.base.Expression;
-import ru.dronov.matlogic.parser.ArithmeticParser;
-import ru.dronov.matlogic.parser.Parser;
-import ru.dronov.matlogic.parser.PredicateParser;
+import ru.dronov.matlogic.parser.ArithmeticParserNew;
+import ru.dronov.matlogic.parser.PredicateParserNew;
 import ru.dronov.matlogic.utils.Texts;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +22,7 @@ public class Task5Main {
             "-dir  dirname  = read and process all tests from given dir\n" +
             "IMPORTANT: filename must be ended with .in";
 
-    private Parser parser;
+    private ArithmeticParserNew parser;
     public ArithmeticHelper helper;
 
     public Task5Main() {
@@ -36,22 +32,29 @@ public class Task5Main {
         if (Texts.isEmpty(inputFile)) {
             throw new IllegalArgumentException("inputFile can't be empty");
         }
-        parser = new ArithmeticParser(inputFile);
-        List<Expression> proof = readProof();
+        List<Expression> proof = readProof(inputFile);
 
         helper = new ArithmeticHelper();
         helper.handle(proof);
     }
 
-    private List<Expression> readProof() throws IOException {
+    private List<Expression> readProof(String file) throws IOException {
         List<Expression> result = new ArrayList<>();
-        while (true) {
-            Expression expression = parser.parse();
+
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        parser = new ArithmeticParserNew();
+        String line = reader.readLine();
+        while (!Texts.isEmpty(line)) {
+            Expression expression = parser.parse(line);
             if (expression == null) {
-                break;
+                System.out.println("argument is null, argument = " + line);
+                throw new RuntimeException("can't be null");
             }
             result.add(expression);
+            line = reader.readLine();
         }
+
         return result;
     }
 

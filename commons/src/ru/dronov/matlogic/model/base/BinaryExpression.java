@@ -64,8 +64,8 @@ public abstract class BinaryExpression extends Expression {
         if (expression.getClass() != getClass()) {
             return false;
         }
-        return left.compareWithEquals(expression, variable, dictionary) &&
-                right.compareWithEquals(expression, variable, dictionary);
+        return left.compareWithEquals(((BinaryExpression)expression).left, variable, dictionary) &&
+                right.compareWithEquals(((BinaryExpression)expression).right, variable, dictionary);
     }
 
     @Override

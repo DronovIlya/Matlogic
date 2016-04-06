@@ -4,8 +4,6 @@ import ru.dronov.matlogic.exceptions.ResourceNotFound;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.model.predicate.Variable;
 import ru.dronov.matlogic.parser.ClassicalParser;
-import ru.dronov.matlogic.parser.Parser;
-import ru.dronov.matlogic.parser.PredicateParser;
 import ru.dronov.matlogic.parser.PredicateParserNew;
 import ru.dronov.matlogic.utils.Texts;
 
