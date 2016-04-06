@@ -20,7 +20,7 @@ public class Task4Main {
             "-dir  dirname  = read and process all tests from given dir\n" +
             "IMPORTANT: filename must be ended with .in";
 
-    private PredicateParserNew parser;
+    private PredicateParser parser;
     public PredicateHelper helper;
 
     private HypothesisHolder holder;
@@ -44,7 +44,7 @@ public class Task4Main {
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line = reader.readLine();
 
-        parser = new PredicateParserNew(line);
+        parser = new PredicateParser(line);
         holder = parser.parseHypothesis();
 
         line = reader.readLine();

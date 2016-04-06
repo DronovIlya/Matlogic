@@ -4,7 +4,6 @@ import ru.dronov.matlogic.parser.*;
 import ru.dronov.matlogic.utils.Texts;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Task3Main {
@@ -20,7 +19,7 @@ public class Task3Main {
             "-dir  dirname  = read and process all tests from given dir\n" +
             "IMPORTANT: filename must be ended with .in";
 
-    private ParserNew parser;
+    private Parser parser;
     private ClassicalHelper helper;
 
     public Task3Main() {

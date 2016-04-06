@@ -1,7 +1,6 @@
 import ru.dronov.matlogic.exceptions.*;
 import ru.dronov.matlogic.model.base.Expression;
-import ru.dronov.matlogic.parser.ArithmeticParserNew;
-import ru.dronov.matlogic.parser.PredicateParserNew;
+import ru.dronov.matlogic.parser.ArithmeticParser;
 import ru.dronov.matlogic.utils.Texts;
 
 import java.io.*;
@@ -22,7 +21,7 @@ public class Task5Main {
             "-dir  dirname  = read and process all tests from given dir\n" +
             "IMPORTANT: filename must be ended with .in";
 
-    private ArithmeticParserNew parser;
+    private ArithmeticParser parser;
     public ArithmeticHelper helper;
 
     public Task5Main() {
@@ -43,7 +42,7 @@ public class Task5Main {
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
 
-        parser = new ArithmeticParserNew();
+        parser = new ArithmeticParser();
         String line = reader.readLine();
         while (!Texts.isEmpty(line)) {
             Expression expression = parser.parse(line);

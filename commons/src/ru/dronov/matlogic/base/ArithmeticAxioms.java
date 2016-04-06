@@ -2,12 +2,10 @@ package ru.dronov.matlogic.base;
 
 import com.sun.istack.internal.Nullable;
 import ru.dronov.matlogic.model.base.Expression;
-import ru.dronov.matlogic.parser.ArithmeticParserNew;
-import ru.dronov.matlogic.parser.ParserNew;
+import ru.dronov.matlogic.parser.ArithmeticParser;
+import ru.dronov.matlogic.parser.Parser;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +42,7 @@ public class ArithmeticAxioms {
     }
 
     private Expression parseStringAxiom(String axiom) throws IOException {
-        ParserNew parser = new ArithmeticParserNew();
+        Parser parser = new ArithmeticParser();
         return parser.parse(axiom);
     }
 

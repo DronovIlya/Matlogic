@@ -7,14 +7,14 @@ import ru.dronov.matlogic.utils.Texts;
 
 import java.io.IOException;
 
-public abstract class ParserNew {
+public abstract class Parser {
 
     protected TokenParser tokenParser;
 
-    protected ParserNew() {
+    protected Parser() {
     }
 
-    protected ParserNew(String input) {
+    protected Parser(String input) {
         tokenParser = new TokenParser(input);
     }
 

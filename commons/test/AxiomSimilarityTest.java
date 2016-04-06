@@ -1,11 +1,10 @@
 import org.junit.Test;
 import ru.dronov.matlogic.model.base.Expression;
-import ru.dronov.matlogic.parser.PredicateParserNew;
+import ru.dronov.matlogic.parser.PredicateParser;
 
 import static org.junit.Assert.*;
-import java.io.ByteArrayInputStream;
+
 import java.io.IOException;
-import java.io.InputStream;
 
 public class AxiomSimilarityTest {
 
@@ -31,7 +30,7 @@ public class AxiomSimilarityTest {
     }
 
     private Expression parseExpression(String expression) throws IOException {
-        PredicateParserNew parser = new PredicateParserNew();
+        PredicateParser parser = new PredicateParser();
         return parser.parse(expression);
     }
 }

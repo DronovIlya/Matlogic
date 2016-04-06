@@ -15,13 +15,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class ArithmeticParserNew extends ParserNew {
+public class ArithmeticParser extends Parser {
 
-    public ArithmeticParserNew(String input) {
+    public ArithmeticParser(String input) {
         tokenParser = new ArithmeticTokenParser(input);
     }
 
-    public ArithmeticParserNew() {
+    public ArithmeticParser() {
         super();
     }
 

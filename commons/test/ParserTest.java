@@ -3,9 +3,7 @@ import static org.junit.Assert.*;
 import ru.dronov.matlogic.model.base.Expression;
 import ru.dronov.matlogic.parser.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class ParserTest {
 
@@ -48,13 +46,13 @@ public class ParserTest {
 
     private Expression parsePredicateExpression(String expression) throws IOException {
 //        InputStream stream = new ByteArrayInputStream(argument.getBytes());
-        ParserNew parser = new PredicateParserNew();
+        Parser parser = new PredicateParser();
         return parser.parse();
     }
 
     private Expression parseArithExpression(String expression) throws IOException {
 //        InputStream stream = new ByteArrayInputStream(argument.getBytes());
-        ParserNew parser = new ArithmeticParserNew();
+        Parser parser = new ArithmeticParser();
         return parser.parse(expression);
     }
 }

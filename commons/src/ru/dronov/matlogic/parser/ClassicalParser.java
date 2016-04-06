@@ -6,7 +6,7 @@ import ru.dronov.matlogic.model.predicate.Variable;
 
 import java.io.IOException;
 
-public class ClassicalParser extends ParserNew {
+public class ClassicalParser extends Parser {
 
     public ClassicalParser() {
         super();

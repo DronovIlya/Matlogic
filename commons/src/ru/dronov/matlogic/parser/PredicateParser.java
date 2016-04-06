@@ -12,13 +12,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PredicateParserNew extends ParserNew {
+public class PredicateParser extends Parser {
 
-    public PredicateParserNew(String hypothesis) {
+    public PredicateParser(String hypothesis) {
         super(hypothesis);
     }
 
-    public PredicateParserNew() {
+    public PredicateParser() {
     }
 
     public HypothesisHolder parseHypothesis() throws IOException {
