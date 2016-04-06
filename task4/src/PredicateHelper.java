@@ -86,7 +86,7 @@ public class PredicateHelper {
             if (Task4Main.DEBUG) {
                 System.out.println("alpha equals argument");
             }
-            answer.addAll(Replacer.replaceAimplAPredicate(expression));
+            answer.addAll(Replacer.replaceAimplA(expression, false));
             return true;
         }
         return false;
@@ -98,7 +98,7 @@ public class PredicateHelper {
                 if (Task4Main.DEBUG) {
                     System.out.println("argument contains in hypothesis = " + hypothesisEntry);
                 }
-                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                answer.addAll(Replacer.replaceAimplB(expression, holder.alpha, false));
                 return true;
             }
         }
@@ -111,7 +111,7 @@ public class PredicateHelper {
             if (Task4Main.DEBUG) {
                 System.out.println("argument is in classical axioms, result = " + result);
             }
-            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha, false));
             return true;
         }
         return false;
@@ -137,7 +137,7 @@ public class PredicateHelper {
                     if (Task4Main.DEBUG) {
                         System.out.println("argument satisfies axiom11");
                     }
-                    answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                    answer.addAll(Replacer.replaceAimplB(expression, holder.alpha, false));
                     return true;
                 }
 
@@ -150,7 +150,7 @@ public class PredicateHelper {
                             if (Task4Main.DEBUG) {
                                 System.out.println("argument satisfies axiom11");
                             }
-                            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha, false));
                             return true;
                         } else {
                             throw new TermSubstituteException(result.toString(), expression.toString(), variable.toString());
@@ -185,7 +185,7 @@ public class PredicateHelper {
                     if (Task4Main.DEBUG) {
                         System.out.println("argument satisfies axiom12");
                     }
-                    answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                    answer.addAll(Replacer.replaceAimplB(expression, holder.alpha, false));
                     return true;
                 }
 
@@ -198,7 +198,7 @@ public class PredicateHelper {
                             if (Task4Main.DEBUG) {
                                 System.out.println("argument satisfies axiom12");
                             }
-                            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha));
+                            answer.addAll(Replacer.replaceAimplB(expression, holder.alpha, false));
                             return true;
                         } else {
                             throw new TermSubstituteException(result.toString(), expression.toString(), variable.toString());
